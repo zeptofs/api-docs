@@ -1,0 +1,461 @@
+{
+  "info": {
+    "name": "Split",
+    "_postman_id": "5649d641-7c0f-7a96-982c-a3d39af08900",
+    "description": "Website\n\n* https://www.splitpayments.com.au\n\nApplication URLS:\n\n* Live UI: https://go.split.cash\n* Live API: https://api.split.cash\n* Sandbox UI: https://go-sandbox.split.cash\n* Sandbox API: https://api-sandbox.split.cash\n\nAPI Documentation\n\n* http://docs.split.apiary.io",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "_postman_id": "25a13235-5faf-005a-ac13-078f8099f832",
+      "name": "Payments & payouts",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "4dc9af02-a593-2061-2ad7-5f1fe79c37a6",
+          "name": "Make a payment",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payments",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"description\": \"Only visible to payer\",\n\t\"matures_at\": \"2016-12-18T00:00:00Z\",\n\t\"payouts\":[\n\t\t{\n\t\t\t\"amount\": 4000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"fb6a9252-3818-44dc-b5aa-2195391a746f\"\n\t\t},\n\t\t{\n\t\t\t\"amount\":6000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"4541b21d-e6ea-401b-8ff4-cad83825c732\"\n\t\t}\n\t]\n}"
+            },
+            "description": ""
+          }
+        },
+        {
+          "_postman_id": "5056db71-9539-477a-a65b-5bdd7f7fcba2",
+          "name": "Get a payment",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payments/{ref}",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "View a specific payment's details"
+          }
+        },
+        {
+          "_postman_id": "0892a889-3c3d-4fe3-919f-4e90016b992f",
+          "name": "Get all payments",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payments",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Retrieve all payment belonging to user"
+          }
+        },
+        {
+          "_postman_id": "539d2529-e631-6c9d-b6e5-24b791a69798",
+          "name": "Void a payout",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payouts/{ref}",
+            "method": "DELETE",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Payments cannot be voided. You can however void all its payouts which has the the same effect.\n\nYou can only void a payout if it's has not yet matured and Split hasn't started processing it.\n\nNote the endpoint is `payouts/` and not `payments/`"
+          }
+        }
+      ]
+    },
+    {
+      "_postman_id": "2fe2b95a-6520-5a4b-8b50-0449bcac2c34",
+      "name": "Contacts",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "fbee7445-fe46-11ca-1132-020c64e01bc2",
+          "name": "Add a contact",
+          "request": {
+            "url": "https://api-sandbox.split.cash/contacts",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"nickname\": \"awesome_co\"\n}"
+            },
+            "description": ""
+          }
+        },
+        {
+          "_postman_id": "3e142427-0ffa-6f94-66ec-58221023adea",
+          "name": "Get a contact",
+          "request": {
+            "url": "https://api-sandbox.split.cash/contacts/{{id}}",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": ""
+          }
+        },
+        {
+          "_postman_id": "fefe4f04-ef36-e282-c376-c2755c3fc483",
+          "name": "Get all contacts",
+          "request": {
+            "url": "https://api-sandbox.split.cash/contacts",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": ""
+          }
+        },
+        {
+          "_postman_id": "fab497f8-01fa-68c7-466a-07790a8a59f8",
+          "name": "Remove a contact",
+          "request": {
+            "url": "https://api-sandbox.split.cash/contacts/{{ id }}",
+            "method": "DELETE",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "_postman_id": "5c9523dc-ac64-dde7-e2fa-04099fd5fb8a",
+      "name": "Payment Requests",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "3cc36ba6-6962-7703-dc04-53b7aa23c6c0",
+          "name": "Request payment",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payment_requests",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"authoriser_id\": \"fb6a9252-3818-44dc-b5aa-2195391a746f\",\n  \"description\": \"Visible to both initiator and authoriser\",\n  \"matures_at\": \"2016-12-25T00:00:00Z\",\n  \"amount\": 99000\n}\n"
+            },
+            "description": "Send a payment request to another Split account"
+          }
+        },
+        {
+          "_postman_id": "4c0bfbdd-194b-57da-6edb-856916542edf",
+          "name": "Approve a payment request",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payment_requests/{ref}/approve",
+            "method": "POST",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Approve an incoming payment request"
+          }
+        },
+        {
+          "_postman_id": "fbe19a79-a5e3-95d6-84a4-5c1f8ae3d90a",
+          "name": "Decline a payment request copy",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payment_requests/{ref}/decline",
+            "method": "POST",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Decline an incoming payment request"
+          }
+        },
+        {
+          "_postman_id": "5609e042-aa57-b5b5-91b6-27383c0c46a2",
+          "name": "Get a payment request",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payment_requests/{ref}",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Get a specific payment request"
+          }
+        },
+        {
+          "_postman_id": "8a42a0a7-4177-b804-fed9-54ab6f7cece7",
+          "name": "List outgoing payment requests",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payment_requests/outgoing",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "All payment requests initiated by the user"
+          }
+        },
+        {
+          "_postman_id": "b1210559-5230-a706-91d7-e8d47ae3a012",
+          "name": "List incoming payment requests",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payment_requests/incoming",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "All payment requests sent to the user"
+          }
+        },
+        {
+          "_postman_id": "63520f5c-e7ce-c923-8384-a95c597728e2",
+          "name": "Cancel a payment request",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payment_requests/{ref}",
+            "method": "DELETE",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Cancel an outgoing payment request that has not yet been approved or declined."
+          }
+        }
+      ]
+    },
+    {
+      "_postman_id": "961677e8-9aeb-bdbd-d884-d92515e2bbcb",
+      "name": "Transactions",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "d12166fd-2962-364f-6a61-bf89de9354c3",
+          "name": "List all transactions",
+          "request": {
+            "url": "https://api-sandbox.split.cash/transactions",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "_postman_id": "a0388949-d100-0fbc-97af-a8ec8a9c3e79",
+      "name": "Authentication",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "c072a9c0-514f-e0ac-6779-cd80c9c1145c",
+          "name": "Refresh Token",
+          "request": {
+            "url": "https://api-sandbox.split.cash/oauth/token",
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "grant_type",
+                  "value": "refresh_token",
+                  "type": "text",
+                  "enabled": "true"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{ client_id }}",
+                  "type": "text",
+                  "enabled": "true"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{ client_secret }}",
+                  "type": "text",
+                  "enabled": "true"
+                },
+                {
+                  "key": "refresh_token",
+                  "value": "{{ refresh_token }}",
+                  "type": "text",
+                  "enabled": "true"
+                }
+              ]
+            },
+            "description": "Has your access token expired? POST your refresh token back to us and we'll provide you with a new access token."
+          }
+        },
+        {
+          "_postman_id": "8794ea2f-d855-7118-dd4c-df5795e35484",
+          "name": "Get access & refresh token pair",
+          "request": {
+            "url": "https://api-sandbox.split.cash/oauth/token",
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "type": "text",
+                  "enabled": "true"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{ client_id }}",
+                  "type": "text",
+                  "enabled": "true"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{ client_secret }}",
+                  "type": "text",
+                  "enabled": "true"
+                },
+                {
+                  "key": "code",
+                  "value": "{{ authorization_code }}",
+                  "type": "text",
+                  "enabled": "true"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://www.getpostman.com/oauth2/callback",
+                  "type": "text",
+                  "enabled": "true"
+                }
+              ]
+            },
+            "description": ""
+          }
+        }
+      ]
+    },
+    {
+      "_postman_id": "a1704e9e-428b-c88f-f2a9-cd82cf72918c",
+      "name": "Refund Requests",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "a9ccf649-905b-7bcf-5f03-c0cde8b73e36",
+          "name": "Request a refund",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payout_refund_requests",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"debit_ref\": \"D.1\",\n\t\"amount\": 100\n}"
+            },
+            "description": "Request a refund against a previously successfully processed payout."
+          }
+        },
+        {
+          "_postman_id": "4d270187-56f8-ad42-910d-ad37f854c984",
+          "name": "Approve a payout refund request",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payout_refund_requests/{ref}/approve",
+            "method": "POST",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Approve an incoming payout refund request"
+          }
+        },
+        {
+          "_postman_id": "4e9a8ae3-2003-65f1-c3b0-b7320dee8efe",
+          "name": "Decline a payout refund request",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payout_refund_requests/{ref}/decline",
+            "method": "POST",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Decline an incoming payout refund request"
+          }
+        },
+        {
+          "_postman_id": "f8fae320-b8e7-96da-2cad-161e8e52a5a2",
+          "name": "Get a refund request",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payout_refund_requests/{ref}",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": ""
+          }
+        },
+        {
+          "_postman_id": "c0c38e7c-528a-1702-a3b8-5afe020e4542",
+          "name": "List incoming payout refund requests",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payout_refund_requests/incoming",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "All payout refund requests sent to the user"
+          }
+        },
+        {
+          "_postman_id": "a711f292-0324-e399-fa77-8045811fe4c5",
+          "name": "List outgoing payout refund requests",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payout_refund_requests/outgoing",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "All payout refund requests initiated by the user"
+          }
+        },
+        {
+          "_postman_id": "3069ab7b-3788-fe48-910e-8b3ff3c3a936",
+          "name": "Cancel a refund request",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payout_refund_requests/{ref}",
+            "method": "DELETE",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Cancel an outgoing refund request that has not yet been approved or declined."
+          }
+        }
+      ]
+    },
+    {
+      "_postman_id": "cf344476-6eee-603e-fa57-9459721e650b",
+      "name": "Users",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "e5692601-e4b8-9657-8d7c-cb082ec6801d",
+          "name": "Get user details",
+          "request": {
+            "url": "https://api-sandbox.split.cash/user",
+            "method": "GET",
+            "body": {
+              "mode": "formdata"
+            },
+            "description": "Get currently authenticated user's details"
+          }
+        }
+      ]
+    }
+  ]
+}
