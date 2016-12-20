@@ -172,11 +172,10 @@ When requesting access you need to pass along with it the level of access you re
 |--------|------------|
 | `public` | View user's public information |
 | `agreements` | Manage user's agreements **(Coming soon)** |
-| `bank_accounts` | Manage user's bank accounts details |
 | `contacts` | Manage user's contacts |
 | `payments` | Manage user's payments |
-| `payments_on_request` | Manage user's payments on request **(Coming soon)**|
-| `refunds` | Manage user's refund requests |
+| `payment_requests` | Manage user's payment requests |
+| `refund_requests` | Manage user's refund requests |
 | `transactions` | Access user's transactions |
 
 ## Pagination
@@ -415,175 +414,14 @@ Only outgoing agreements (agreements initated by the authenticated account) can 
 
 + Response 204
 
-
-# Group Bank Accounts
-Bank accounts belong to a Split account and are managed by a Split user.
-Split supports the use of only one verified bank account at a time. Typically, a bank account will only be added once: upon registration.
-
-**Note:** Deleting or adding a new bank account will require the bank account to be re-verified before the Split account can transact again.
-
-## List or add bank accounts [/bank_accounts]
-**Endpoint:** `/bank_accounts`
-
-### List all bank accounts | GET [GET]
-
-+ Request
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-
-+ Response 200 (application/json)
-
-        {
-          "data": [
-            {
-              "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
-              "account_number": "947434694",
-              "branch_code": "304304",
-              "verified": false
-            }
-          ]
-        }
-
-### Add a bank account | POST [POST]
-
-+ Attributes
-    + branch_code: 304304
-    + account_number: 947434694
-
-+ Request (application/json)
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-
-    + Body
-    
-            {
-                "account_number": "947434694",
-                "branch_code": "304304"
-            }
-            
-+ Response 201 (application/json)
-
-        {
-          "data": {
-            "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
-            "account_number": "947434694",
-            "branch_code": "304304",
-            "verified": false
-          }
-        }
-
-+ Response 400 (application/json)
-
-        {
-            "errors": [
-                "Account number can't be blank"
-            ]
-        }
-
-## Get or delete a bank account [/bank_accounts/{id}]
-**Endpoint:** `/bank_accounts/{id}`
-
-### Get a bank account | GET [GET]
-
-+ Parameters
-    + id: `55afddde-4296-4daf-8e49-7ba481ef9608` - bank account ID
-    
-+ Request
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-    
-+ Response 200 (application/json)
-
-        {
-          "data": {
-            "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
-            "account_number": "947434694",
-            "branch_code": "304304",
-            "verified": false
-          }
-        }
-            
-
-### Delete a bank account | DELETE [DELETE]
-
-+ Parameters
-    + id: `55afddde-4296-4daf-8e49-7ba481ef9608` - bank account ID
-    
-+ Response 204
-
 # Group Contacts
 Your contacts form an address book of Split accounts with whom you can interact. In order to create a [Payment](#reference/payments) or
 a [Payment on Request](#reference/payments-on-request) you must first have the recipient Split account as part of your contacts.
 
-
-
-## List contacts [/contacts{?page}]
+## Add or list contacts [/contacts{?page}]
 **Endpoint:** `/contacts{?page}`
 
-### List all contacts | GET [GET]
-
-+ Parameters
-    + page: 1 (optional) - page of results to return
-    
-+ Request
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-    
-+ Response 200 (application/json)
-
-    + Headers
-
-            Link: <http:/api-sandbox.split.cash/contacts?page=2>; rel="next", <http:/api-sandbox.split.cash/contacts?page=8>; rel="last"
-    
-    + Body
-            
-            {
-              "data": [
-                {
-                  "id": "095c5ab7-7fa8-40fd-b317-cddbbf4c8fbc",
-                  "bsb": "123456",
-                  "account_number": "494307",
-                  "state": "active",
-                  "business": {
-                    "nickname": "outstanding_tours",
-                    "abn": "123456789",
-                    "name": "Oustanding Tours Pty Ltd"
-                  }
-                },
-                {   
-                  "id": "861ff8e4-7acf-4897-9e53-e7c5ae5f7cc0",
-                  "bsb": "534446",
-                  "account_number": "4395959",
-                  "status": "active",
-                  "business": {
-                    "nickname": "adventure_dudes",
-                    "abn": "126754389",
-                    "name": "Adventure Dudes Pty Ltd"
-                  }
-                },
-                {
-                  "id": "3156e4e6-688e-4f95-a591-f1a4fb3b768a",
-                  "bsb": "534224",
-                  "account_number": "493584",
-                  "status": "suspended",
-                  "business": {
-                    "nickname": "surfing_world",
-                    "abn": "295443789",
-                    "name": "Surfing World Pty Ltd"
-                  }
-                }
-              ]
-            }
-
-### Add a new contact | POST [POST]
+### Add a contact | POST [POST]
 
 + Request (application/json)
 
@@ -611,24 +449,75 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
               "abn": "123456789",
               "name": "Outstanding Tours Pty Ltd"
             }
-          }
+          }dickens-brothers-3
         }
 
-+ Response 404 (application/json)
++ Response 404
 
-        {
-            "errors": [
-                "Cannot find requested Split account"
-            ]
-        }
+### List all contacts | GET [GET]
+
++ Parameters
+    + page: 1 (optional) - page of results to return
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 200 (application/json)
+
+    + Headers
+
+            Link: <http:/api-sandbox.split.cash/contacts?page=2>; rel="next", <http:/api-sandbox.split.cash/contacts?page=8>; rel="last"
+    
+    + Body
+            
+            {
+              "data": [
+                {
+                  "id": "095c5ab7-7fa8-40fd-b317-cddbbf4c8fbc",
+                  "account_number": "494307",
+                  "branch_code": "435434",
+                  "state": "active",
+                  "business": {
+                    "nickname": "outstanding_tours",
+                    "abn": "123456789",
+                    "name": "Oustanding Tours Pty Ltd"
+                  }
+                },
+                {   
+                  "id": "861ff8e4-7acf-4897-9e53-e7c5ae5f7cc0",
+                  "account_number": "4395959",
+                  "branch_code": "068231",
+                  "state": "active",
+                  "business": {
+                    "nickname": "adventure_dudes",
+                    "abn": "126754389",
+                    "name": "Adventure Dudes Pty Ltd"
+                  }
+                },
+                {
+                  "id": "3156e4e6-688e-4f95-a591-f1a4fb3b768a",
+                  "account_number": "493584",
+                  "branch_code": "022434",
+                  "state": "suspended",
+                  "business": {
+                    "nickname": "surfing_world",
+                    "abn": "295443789",
+                    "name": "Surfing World Pty Ltd"
+                  }
+                }
+              ]
+            }
         
-## Manage contact [/contacts/{nickname}]
+## Get or remove a contact [/contacts/{nickname}]
 **Endpoint:** `/contacts/{nickname}`
 
 ### Get a contact | GET [GET]
 
 + Parameters
-    + `nickname`: `outstanding_tours` - Contact's account nickname
+    + nickname: `outstanding_tours` - Contact's account nickname
     
 + Request
     
@@ -658,37 +547,6 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
             "errors": [
                 "Cannot find requested Split account"
             ]
-        }
-
-### Update a contact's state | PATCH [PATCH]
-A contact can be either `active` or `suspended`. A suspended contact remains in the contact list but cannot be transacted with.
-
-+ Parameters
-    + nickname: `outstanding_tours` - Contact's account nickname
-    
-+ Attributes
-    + status: suspended (string, required) - Possible values: `active`, `suspended`
-    
-+ Request (application/json)
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-    
-+ Response 200
-
-        {
-          "data": {
-            "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
-            "account_number": "947434694",
-            "branch_code": "304304",
-            "state": "suspended",
-            "business": {
-              "nickname": "outstanding_tours",
-              "abn": "123456789",
-              "name": "Outstanding Tours Pty Ltd"
-            }
-          }
         }
 
 
@@ -720,8 +578,60 @@ A contact can be either `active` or `suspended`. A suspended contact remains in 
    
    *SuperAgent would also add the 2 suppliers as recipients of the payment to each receive $300 with personalised descriptions.*
    
-## List or make a payment [/payments{?page}]
+## Make or list payments [/payments{?page}]
 **Endpoint:** `/payments{?page}`
+
+### Make a payment | POST [POST]
+
++ Attributes
+    + description: The SuperPackage (string, required) - User description. Only visible to the payer
+    + matures_at: 2016-09-13T00:00:00Z (string, required) - Date & time in UTC ISO8601 the payment should be processed
+    + payouts (array, required) - One or many contact to pay (2 recipients in this example)
+        + (object)
+            + amount: 30000 (number, required) - Amount in cents to pay the recipient
+            + description: `A tandem skydive jump SB23094` (string, required) - Description that both the payer an recipient can see
+            + recipient_id: `48b89364-1577-4c81-ba02-96705895d457` (string, required) - Contact to pay
+        + (object)
+            + amount: 30000 (number, required) - Amount in cents to pay the recipient
+            + description: `A scuba dive SDS5464` (string, required) - Description that both the payer an recipient can see
+            + recipient_id: `dc6f1e60-3803-43ca-a200-7d641816f57f` (string, required) - Contact to pay
+            
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+        
++ Response 201 (application/json)
+
+        {
+          "data": {
+            "ref": "PB.1",
+            "payouts": [
+              {
+                "ref": "D.1",
+                "batch_description": "The SuperPackage",
+                "matures_on": "2016-09-13T23:50:44Z",
+                "created_at": "2016-09-10T23:50:44Z",
+                "amount": 30000,
+                "description": "A tandem skydive jump SB23094",
+                "from_id": "83623359-e86e-440c-9780-432a3bc3626f",
+                "to_id": "48b89364-1577-4c81-ba02-96705895d457"
+              },
+              {
+                "ref": "D.2",
+                "batch_description": "The SuperPackage",
+                "matures_on": "2016-09-13T23:50:44Z",
+                "created_at": "2016-09-10T23:50:44Z",
+                "amount": 30000,
+                "description": "A scuba dive SDS5464",
+                "from_id": "48b89364-1577-4c81-ba02-96705895d457",
+                "to_id": "dc6f1e60-3803-43ca-a200-7d641816f57f"
+              }
+            ]
+          }
+        }
 
 ### List all payments | GET [GET]
 + Parameters
@@ -749,8 +659,8 @@ A contact can be either `active` or `suspended`. A suspended contact remains in 
                     {
                       "ref": "D.1",
                       "batch_description": "This description is only available to the payer",
-                      "matures_on": "2016-09-13T23:50:44.435Z",
-                      "created_at": "2016-09-10T23:50:44.435Z",
+                      "matures_on": "2016-09-13T23:50:44Z",
+                      "created_at": "2016-09-10T23:50:44Z",
                       "amount": 30000,
                       "description": "The recipient will see this description",
                       "from_id": "83623359-e86e-440c-9780-432a3bc3626f",
@@ -759,8 +669,8 @@ A contact can be either `active` or `suspended`. A suspended contact remains in 
                     {
                       "ref": "P.2",
                       "batch_description": "This description is only available to the payer",
-                      "matures_on": "2016-09-13T23:50:44.435Z",
-                      "created_at": "2016-09-10T23:50:44.435Z",
+                      "matures_on": "2016-09-13T23:50:44Z",
+                      "created_at": "2016-09-10T23:50:44Z",
                       "amount": 30000,
                       "description": "The recipient will see this description",
                       "from_id": "48b89364-1577-4c81-ba02-96705895d457",
@@ -771,66 +681,13 @@ A contact can be either `active` or `suspended`. A suspended contact remains in 
               ]
             }
 
-### Make a payment | POST [POST]
-
-+ Attributes
-    + description: The SuperPackage (string, required) - User description. Only visible to the payer
-    + matures_on: 2016-09-13 (number, required) - Date the payment should be processed
-    + payouts (array, required) - One or many contact to pay (2 recipients in this example)
-        + (object)
-            + amount: 30000 (number, required) - Amount in cents to pay the recipient
-            + description: `A tandem skydive jump SB23094` (string, required) - Description that both the payer an recipient can see
-            + to_id: `48b89364-1577-4c81-ba02-96705895d457` (string, required) - Contact to pay
-        + (object)
-            + amount: 30000 (number, required) - Amount in cents to pay the recipient
-            + description: `A scuba dive SDS5464` (string, required) - Description that both the payer an recipient can see
-            + to_id: `dc6f1e60-3803-43ca-a200-7d641816f57f` (string, required) - Contact to pay
-            
-
-+ Request (application/json)
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-        
-+ Response 201 (application/json)
-
-        {
-          "data": {
-            "ref": "PB.1",
-            "payouts": [
-              {
-                "ref": "D.1",
-                "batch_description": "The SuperPackage",
-                "matures_on": "2016-09-13T23:50:44.435Z",
-                "created_at": "2016-09-10T23:50:44.435Z",
-                "amount": 30000,
-                "description": "A tandem skydive jump SB23094",
-                "from_id": "83623359-e86e-440c-9780-432a3bc3626f",
-                "to_id": "48b89364-1577-4c81-ba02-96705895d457"
-              },
-              {
-                "ref": "D.2",
-                "batch_description": "The SuperPackage",
-                "matures_on": "2016-09-13T23:50:44.435Z",
-                "created_at": "2016-09-10T23:50:44.435Z",
-                "amount": 30000,
-                "description": "A scuba dive SDS5464",
-                "from_id": "48b89364-1577-4c81-ba02-96705895d457",
-                "to_id": "dc6f1e60-3803-43ca-a200-7d641816f57f"
-              }
-            ]
-          }
-        }
-
-
-## Get or void a payment [/payments/{id}]
-**Endpoint:** `/payments/{id}`
+## Get or void a payment [/payments/{ref}]
+**Endpoint:** `/payments/{ref}`
 
 ### Get a payment | GET [GET]
 
 + Parameters
-    + id: `PB.1` (string, required) - Payment ref
+    + ref: `PB.1` (string, required) - Payment reference
     
 + Request
 
@@ -847,8 +704,8 @@ A contact can be either `active` or `suspended`. A suspended contact remains in 
               {
                 "ref": "D.1",
                 "batch_description": "The SuperPackage",
-                "matures_on": "2016-09-13T23:50:44.435Z",
-                "created_at": "2016-09-10T23:50:44.435Z",
+                "matures_on": "2016-09-13T23:50:44Z",
+                "created_at": "2016-09-10T23:50:44",
                 "amount": 30000,
                 "description": "A tandem skydive jump SB23094",
                 "from_id": "83623359-e86e-440c-9780-432a3bc3626f",
@@ -857,8 +714,8 @@ A contact can be either `active` or `suspended`. A suspended contact remains in 
               {
                 "ref": "D.2",
                 "batch_description": "The SuperPackage",
-                "matures_on": "2016-09-13T23:50:44.435Z",
-                "created_at": "2016-09-10T23:50:44.435Z",
+                "matures_on": "2016-09-13T23:50:44Z",
+                "created_at": "2016-09-10T23:50:44Z",
                 "amount": 30000,
                 "description": "A scuba dive SDS5464",
                 "from_id": "48b89364-1577-4c81-ba02-96705895d457",
@@ -871,7 +728,7 @@ A contact can be either `active` or `suspended`. A suspended contact remains in 
 ### Void a payment | DELETE [DELETE]
 
 + Parameters
-    + id: `PB.1` - Payment ref
+    + ref: `PB.1` - Payment reference
     
 + Request
 
@@ -882,191 +739,56 @@ A contact can be either `active` or `suspended`. A suspended contact remains in 
 + Response 204 (application/json)
 
 
-# Group Payments on Request
+# Group Payment Requests
 
-> **NOTE**: This is an experimental feature that has not yet been released. Please contact us at [info@splitpayments.com.au](mailto:info@splitpayments.com.au) to get early access.
+A Payment Request (PR) is used in order to get paid by another Split account.
+A PR is very similar to a [Payment](#reference/payments), the main differences are:
 
-A Payment on Request (PoR) is used in order to get paid by another Split account.
-A PoR is very similar to a [Payment](#reference/payments), the main differences are:
-
-* A PoR is initiated by the recipient of the payment
-* A PoR has only one recipient which is the initiator of the PoR. This happens automatically.
-* A PoR needs to be approved (manually or automatically) by the PoR payer.
+* A PR is initiated by the recipient of the payment
+* A PR has only one recipient which is the initiator of the PR. This happens automatically.
+* A PR needs to be approved (manually or automatically) by the PR payer.
 
 **Example scenario**
 
 *Rafting Co. requires SmallAgent to pay them $500 for a rafting tour that was previously sold by SmallAgent.
-Rafting Co. creates a PoR for $500 with the target Split account being SmallAgent.*
+Rafting Co. sends a PR for $500 with to SmallAgent.*
 
-*SmallAgent will receive a notification that a PoR from Rafting Co. for $500 requires approval. Once SmallAgent approves, the payment will
+*SmallAgent will receive a notification that a PR from Rafting Co. for $500 requires approval. Once SmallAgent approves, the payment will
 be processed according to the maturation date.*
 
 ## Types
-Since PoRs are visible by both the payer and payee, we identify who created the PoR by using types:
+Since PRs are visible by both the payer and payee, we identify who created the PR by using types:
 
-1. **Incoming:** An incoming Payment on Request (you are the payer)
-2. **Outgoing:** An outgoing Payment on Request (they are the payer)
+1. **Incoming:** An incoming Payment Request (you are the authoriser/payer)
+2. **Outgoing:** An outgoing Payment Request (you are the initiator/payee)
 
 **Example**
 
-*Split Account A (SAA) sends a PoR to Split Account B (SAB) in order to get paid.*
+*Split Account A (SAA) sends a PR to Split Account B (SAB) in order to get paid.*
 
-*SAA would see the PoR as an outgoing PoR whislt SAB would see it as an incoming PoR*
+*SAA would see the PR as an outgoing PR whilst SAB would see it as an incoming PR*
 
 ## Lifecycle
 
-A `payment_on_request` root object can have the following states:
+A PR can have the following states:
 
 | State | Description |
 |-------|-------------|
 | `pending_approval` | Waiting for the payer to approve the payment request. |
 | `approved` | The payer has approved the payment request. |
-| `pending` | Waiting for the payment to mature. |
-| `processing` | The payment has matured and is being processed with the banks. |
-| `processed` | The payment has completed. |
 | `declined` | The payer has declined the payment request. |
-| `voided` | The PoR has been voided. |
+| `cancelled` | The initiator has cancelled the payment request. |
 
-
-## List or make a payment on request  [/payments_on_request{?page}]
-**Endpoint:** `/payments_on_request{?page}`
-
-### List all payments on request | GET [GET]
-+ Parameters
-    + page: 1 (string, optional) - page of results to return
-    
-+ Request
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-    
-+ Response 200 (application/json)
-
-    + Headers
-
-            Link: <http:/api-sandbox.split.cash/payments?page=2>; rel="next", <http:/api-sandbox.split.cash/payments?page=8>; rel="last"
-
-    + Body
-    
-            [
-                {
-                    "id": "06eea464-74ce-4ffc-8aef-a8fb1bef9d8f",
-                    "payer_id": "de86472c-c027-4735-a6a7-234366a27fc7",
-                    "type": "outgoing",
-                    "ref": "SPOR-1",
-                    "matures_at": "2016-09-18T23:50:44.435Z",
-                    "created_at": "2016-09-10T23:50:44.435Z",
-                    "status": "pending_approval"
-                    "payout": {
-                        "id" : "de86472c-c027-4735-a6a7-234366a27fc7",
-                        "recipient_id": "48b89364-1577-4c81-ba02-96705895d457",
-                        "ref": "SPO-1"
-                        "amount": 29500,
-                        "currency": "AUD",
-                        "description": "This description is visible to the payer and payee",
-                        "history": [
-                            {
-                                "event": "Payout created",
-                                "occured_at": "2016-09-10T23:50:44.435Z"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "id": "5078f43c-57e4-49c7-a19f-b8b850edfb7f",
-                    "payer_id": "c608e871-919f-4691-92f9-b5e08af0956d",
-                    "type": "outgoing",
-                    "ref": "SPOR-2",
-                    "matures_at": "2016-09-18T23:50:44.435Z",
-                    "created_at": "2016-09-10T23:50:44.435Z",
-                    "status": "pending"
-                    "payout": {
-                        "id" : "de86472c-c027-4735-a6a7-234366a27fc7",
-                        "recipient_id": "48b89364-1577-4c81-ba02-96705895d457",
-                        "ref": "SPO-2"
-                        "amount": 50000,
-                        "currency": "AUD",
-                        "description": "This description is visible to the payer and payee",
-                        "history": [
-                            {
-                                "event": "Payout created",
-                                "occured_at": "2016-18-10T23:50:44.435Z"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "id": "490799cd-d724-4cd4-bd2a-702289290962",
-                    "payer_id": "c608e871-919f-4691-92f9-b5e08af0956d",
-                    "type": "outgoing",
-                    "ref": "SPOR-3",
-                    "matures_at": "2016-09-13T23:50:44.435Z",
-                    "created_at": "2016-09-10T23:50:44.435Z",
-                    "status": "processing"
-                    "payout": {
-                        "id" : "ba0ac211-5c07-4e9f-b9d3-7c6586631cdb",
-                        "recipient_id": "48b89364-1577-4c81-ba02-96705895d457",
-                        "ref": "SPO-3"
-                        "amount": 50000,
-                        "currency": "AUD",
-                        "description": "This description is visible to the payer and payee",
-                        "history": [
-                            {
-                                "event": "Payout created",
-                                "occured_at": "2016-09-10T23:50:44.435Z"
-                            },
-                            {
-                                "event": "Debit payer account initiated",
-                                "occured_at": "2016-09-14T05:00:00.000Z"
-                            },
-                            {
-                                "event": "Debit payer account succeeded",
-                                "occured_at": "2016-09-14T05:30:00.000Z"
-                            },
-                            {
-                                "event": "Debit funds cleared",
-                                "occured_at": "2016-09-18T05:00:00.000Z"
-                            },
-                            {
-                                "event": "Credit recipient account initiated",
-                                "occured_at": "2016-09-18T05:02:00.000Z"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "id": "18650718-5f68-4525-b900-36e01a771bbc",
-                    "payer_id": "211b1339-b108-45e4-b7b3-d896cbe02e51",
-                    "type": "incoming",
-                    "ref": "SPOR-4",
-                    "matures_at": "2016-09-20T23:50:44.435Z",
-                    "created_at": "2016-09-14T23:50:44.435Z",
-                    "status": "pending_approval"
-                    "payout": {
-                        "id" : "de86472c-c027-4735-a6a7-234366a27fc7",
-                        "recipient_id": "48b89364-1577-4c81-ba02-96705895d457",
-                        "ref": "SPO-4"
-                        "amount": 50000,
-                        "currency": "AUD",
-                        "description": "This description is visible to the payer and payee",
-                        "history": [
-                            {
-                                "event": "Payout created",
-                                "occured_at": "2016-09-14T23:50:44.435Z"
-                            }
-                        ]
-                    }
-                }
-            ]
+## Request a payment [/payment_requests]
+**Endpoint:** `/payment_requests`
 
 ### Make a payment on request | POST [POST]
 
 + Attributes
-    + payer_id: `de86472c-c027-4735-a6a7-234366a27fc7` (string, required) - The Split account that will action the PoR
-    + description: "Rafting Co. Great Water Expedition R23094" (string, required) - Description visible to the payer & payee
-    + maturation_days: 3 (number, required) - Amount of days to wait before the payment should be processed
-    + amount: 29500 (number, required) - Amount in cents to pay the recipient
+    + authoriser_id: `de86472c-c027-4735-a6a7-234366a27fc7` (string, required) - The Split account that will action/pay the PR
+    + description: "Visible to both initiator and authoriser" (string, required) - Description visible to the initiator (payee) & authoriser (payer)
+    + matures_at: "2016-12-19T02:10:56Z" (string, required) - Date & time in UTC ISO8601 that the payment will be processed if the request is approved
+    + amount: 99000 (number, required) - Amount in cents to pay the initiator
 
 + Request (application/json)
 
@@ -1077,37 +799,95 @@ A `payment_on_request` root object can have the following states:
 + Response 201 (application/json)
 
         {
-            "id": "4064b05d-187d-49e7-9099-179ddb7a3843",
-            "payer_id": "de86472c-c027-4735-a6a7-234366a27fc7",
-            "type": "outgoing",
-            "ref": "SPOR-5",
-            "matures_at": "2016-09-13T23:50:44.435Z",
-            "created_at": "2016-09-10T23:50:44.435Z",
-            "status": "pending_approval"
+          "data": {
+            "ref": "PR.3",
+            "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+            "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+            "status": "pending_approval",
+            "responded_at": null,
+            "created_at": "2016-12-19T02:10:56Z",
+            "debit_ref": null,
             "payout": {
-                "id" : "de86472c-c027-4735-a6a7-234366a27fc7",
-                "recipient_id": "48b89364-1577-4c81-ba02-96705895d457",
-                "ref": "SPO-5"
-                "amount": 29500,
-                "currency": "AUD",
-                "description": "Rafting Co. Great Water Expedition R23094",
-                "history": [
-                    {
-                        "event": "Payout created",
-                        "occured_at": "2016-09-14T23:50:44.435Z"
-                    }
-                ]
+              "amount": 99000,
+              "description": "The elite package for 4",
+              "matures_at": "2016-12-25T00:00:00Z"
             }
+          }
         }
 
+## Approve a payment request [/payment_requests/{ref}/approve]
+**Endpoint:** `/payment_requests{ref}/approve`
 
-## Get or void a payment on request [/payments_on_request/{id}]
-**Endpoint:** `/payments_on_request/{id}`
-
-### Get a payment on request | GET [GET]
+### Approve | POST [POST]
 
 + Parameters
-    + id: `4064b05d-187d-49e7-9099-179ddb7a3843` (string, required) - Payment ID
+    + ref: `PR.3` (string, required) - Payment request reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+            
++ Response 200 (application/json)
+
+        {
+          "data": {
+            "ref": "PR.3",
+            "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+            "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+            "status": "approved",
+            "responded_at": "2016-12-19T02:38:04Z",
+            "created_at": "2016-12-19T02:10:56Z",
+            "credit_ref": "C.b",
+            "payout": {
+              "amount": 99000,
+              "description": "The elite package for 4",
+              "matures_at": "2016-12-25T00:00:00Z"
+            }
+          }
+        }
+
+## Decline a payment request [/payment_requests/{ref}/decline]
+**Endpoint:** `/payment_requests/{ref}/decline`
+
+### Decline | POST [POST]
+
++ Parameters
+    + ref: `PR.3` (string, required) - Payment request reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+            
++ Response 200 (application/json)
+
+        {
+          "data": {
+            "ref": "PR.3",
+            "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+            "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+            "status": "declined",
+            "responded_at": "2016-12-19T02:38:04Z",
+            "created_at": "2016-12-19T02:10:56Z",
+            "credit_ref": null,
+            "payout": {
+              "amount": 99000,
+              "description": "The elite package for 4",
+              "matures_at": "2016-12-25T00:00:00Z"
+            }
+          }
+        }
+
+## Get or cancel a payment request [/payment_requests/{ref}]
+**Endpoint:** `/payment_requests/{ref}`
+
+### Get a payment request | GET [GET]
+
++ Parameters
+    + ref: `PR.3` (string, required) - Payment request reference
     
 + Request
 
@@ -1118,34 +898,27 @@ A `payment_on_request` root object can have the following states:
 + Response 200 (application/json)
     
         {
-            "id": "4064b05d-187d-49e7-9099-179ddb7a3843",
-            "payer_id": "de86472c-c027-4735-a6a7-234366a27fc7",
-            "type": "outgoing",
-            "ref": "SPOR-5",
-            "matures_at": "2016-09-13T23:50:44.435Z",
-            "created_at": "2016-09-10T23:50:44.435Z",
-            "status": "pending_approval"
+          "data": {
+            "ref": "PR.3",
+            "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+            "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+            "status": "approved",
+            "responded_at": "2016-12-19T02:38:04Z",
+            "created_at": "2016-12-19T02:10:56Z",
+            "credit_ref": "C.b",
             "payout": {
-                "id" : "de86472c-c027-4735-a6a7-234366a27fc7",
-                "recipient_id": "48b89364-1577-4c81-ba02-96705895d457",
-                "ref": "SPO-5"
-                "amount": 29500,
-                "currency": "AUD",
-                "description": "Rafting Co. Great Water Expedition R23094",
-                "history": [
-                    {
-                        "event": "Payout created",
-                        "occured_at": "2016-09-14T23:50:44.435Z"
-                    }
-                ]
+              "amount": 99000,
+              "description": "The elite package for 4",
+              "matures_at": "2016-12-25T00:00:00Z"
             }
+          }
         }
 
-### Void a payment on request | DELETE [DELETE]
-A PoR can only be voided if it has not yet been approved.
+### Cancel a payment request | DELETE [DELETE]
+A PR can only be cancelled if it has not yet been approved.
 
 + Parameters
-    + id: `4064b05d-187d-49e7-9099-179ddb7a384` - Payment ID
+    + ref: `PR.3` - Payment request reference
     
 + Request
 
@@ -1155,6 +928,115 @@ A PoR can only be voided if it has not yet been approved.
     
 + Response 204 (application/json)
 
+## Incoming payment requests [/payment_requests/incoming{?page}]
+**Endpoint:** `/payment_requests/incoming{?page}`
+
+### List incoming payment requests | GET [GET]
+
++ Parameters
+    + page: 1 (optional) - page of results to return
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 200 (application/json)
+
+    + Headers
+
+            Link: <http:/api-sandbox.spli.cash/payment_requests/incoming?page=2>; rel="next", <http:/api-sandbox.split.cash/payment_requests/incoming?page=8>; rel="last"
+
+    + Body
+    
+            {
+              "data": [
+                {
+                  "ref": "PR.2",
+                  "initiator_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+                  "authoriser_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+                  "status": "approved",
+                  "responded_at": "2016-12-19T02:10:18Z",
+                  "created_at": "2016-12-19T02:09:09Z",
+                  "credit_ref": "C.a",
+                  "payout": {
+                    "amount": 30000,
+                    "description": "The SuperPackage",
+                    "matures_at": "2016-12-20T00:00:00Z"
+                  }
+                },
+                {
+                  "ref": "PR.3",
+                  "initiator_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+                  "authoriser_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+                  "status": "pending_approval",
+                  "responded_at": null,
+                  "created_at": "2016-12-19T02:10:56Z",
+                  "credit_ref": null,
+                  "payout": {
+                    "amount": 99000,
+                    "description": "The elite package for 4",
+                    "matures_at": "2016-12-25T00:00:00Z"
+                  }
+                }
+              ]
+            }
+
+## Outgoing payment requests [/payment_requests/outgoing{?page}]
+**Endpoint:** `/payment_requests/outgoing{?page}`
+
+### List outgoing payment requests | GET [GET]
+
++ Parameters
+    + page: 1 (optional) - page of results to return
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 200 (application/json)
+
+    + Headers
+
+            Link: <http:/api-sandbox.spli.cash/payment_requests/outgoing?page=2>; rel="next", <http:/api-sandbox.split.cash/payment_requests/outgoing?page=8>; rel="last"
+
+    + Body
+    
+            {
+              "data": [
+                {
+                  "ref": "PR.4",
+                  "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+                  "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+                  "status": "approved",
+                  "responded_at": "2016-12-19T02:10:18Z",
+                  "created_at": "2016-12-19T02:09:09Z",
+                  "debit_ref": "D.a",
+                  "payout": {
+                    "amount": 30000,
+                    "description": "The SuperPackage",
+                    "matures_at": "2016-12-20T00:00:00Z"
+                  }
+                },
+                {
+                  "ref": "PR.5",
+                  "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+                  "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+                  "status": "pending_approval",
+                  "responded_at": null,
+                  "created_at": "2016-12-19T02:10:56Z",
+                  "debit_ref": null,
+                  "payout": {
+                    "amount": 99000,
+                    "description": "The elite package for 4",
+                    "matures_at": "2016-12-25T00:00:00Z"
+                  }
+                }
+              ]
+            }
 
 # Group Refund Requests
 Manage refund requests applied against successfully processed payouts.
@@ -1180,13 +1062,110 @@ A `refund_request` can have the following states:
 | `declined` | The refunder has declined the refund request. |
 | `cancelled` | The refund request has been cancelled. |
 
-## Outgoing refund requests [/payout_refund_requests/outgoing{?page}]
-**Endpoint:** `/payout_refund_requests/outgoing{?page}`
+## Request a refund [/payout_refund_requests]
+**Endpoint:** `/payout_refund_requests`
 
-### List all refunds | GET [GET]
+Certain rules apply to the creation of a refund:
+
+* Must be applied against a successfully processed payout
+* The refund amount requested from a payout recipient may not exceed the original amount of the payout
+
+> **Note:** The original payout recipient(s) must approve the refund request before the refund gets processed.
+
+### Request a refund | POST [POST]
+#### Body Attributes
++ Attributes
+    + `debit_ref`: `D.1` (string, required) - The payout ref to refund against
+    + amount: 500 (number, required) - Amount in cents to request from the original payout recipient
+
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+
++ Response 201 (application/json)
+
+        {
+          "data": {
+            "ref": "RR.2",
+            "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+            "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+            "status": "pending_approval",
+            "responded_at": null,
+            "created_at": "2016-12-19T04:34:38Z",
+            "debit_ref": "D.1",
+            "amount": 500
+          }
+        }
+        
+## Approve a payout refund request [/payout_refund_requests/{ref}/approve]
+**Endpoint:** `/payout_refund_requests/{ref}/approve`
+
+### Approve | POST [POST]
 
 + Parameters
-    + page: 1 (optional) - page of results to return
+    + ref: `PR.3` (string, required) - Payout refund request reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+            
++ Response 200 (application/json)
+
+        {
+          "data": {
+            "ref": "RR.2",
+            "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+            "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+            "status": "approved",
+            "responded_at": "2016-12-19T04:42:59Z",
+            "created_at": "2016-12-19T04:34:38Z",
+            "credit_ref": "C.1",
+            "amount": 100
+          }
+        }
+
+## Decline a payout refund request [/payout_refund_requests/{ref}/decline]
+**Endpoint:** `/payout_refund_requests/{ref}/decline`
+
+### Decline | POST [POST]
+
++ Parameters
+    + ref: `PR.3` (string, required) - Payout refund request reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+            
++ Response 200 (application/json)
+
+        {
+          "data": {
+            "ref": "RR.2",
+            "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+            "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+            "status": "declined",
+            "responded_at": "2016-12-19T04:42:59Z",
+            "created_at": "2016-12-19T04:34:38Z",
+            "credit_ref": "C.1",
+            "amount": 100
+          }
+        }
+        
+## Get or cancel a refund request [/payout_refund_requests/{ref}]
+**Endpoint:** `/payout_refund_requests/{ref}`
+
+A refund request can only be cancelled if it is still `pending_approval`.
+
+### Retrieve a refund request | GET [GET]
+
++ Parameters
+    + ref: `RR.2` (string, required) - refund request ref
     
 + Request
 
@@ -1195,42 +1174,39 @@ A `refund_request` can have the following states:
             Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
     
 + Response 200 (application/json)
+    
+        {
+          "data": {
+            "ref": "RR.2",
+            "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+            "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+            "status": "pending_approval",
+            "responded_at": null,
+            "created_at": "2016-12-19T04:34:38Z",
+            "debit_ref": "D.1",
+            "amount": 10000
+          }
+        }
+
+### Cancel a refund request | DELETE [DELETE]
+
+A refund request can only be canceled if it is pending approval.
+
++ Parameters
+    + ref: `RR.2` (required) - refund request ref
+
++ Request
 
     + Headers
-
-            Link: <http:/api-sandbox.spli.cash/payout_refund_requests?page=2>; rel="next", <http:/api-sandbox.split.cash/payout_refund_requests?page=8>; rel="last"
-
-    + Body
     
-            {
-              "data":
-                [
-                  {
-                    "ref": "PRR.1",
-                    "initiator_id": "48b89364-1577-4c81-ba02-96705895d457",
-                    "authoriser_id": "dc6f1e60-3803-43ca-a200-7d641816f57f",
-                    "status": "pending_approval",
-                    "responded_at": null,
-                    "debit_ref": "D.1",
-                    "amount": 5000
-                  },
-                  {
-                    "ref": "PRR.2",
-                    "initiator_id": "48b89364-1577-4c81-ba02-96705895d457",
-                    "authoriser_id": "dc6f1e60-3803-43ca-a200-7d641816f57f",
-                    "status": "pending_approval",
-                    "debit_ref": "D.2",
-                    "amount": 10000
-                  }
-                ]
-              }
-            }
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
 
++ Response 204
 
 ## Incoming refund requests [/payout_refund_requests/incoming{?page}]
 **Endpoint:** `/payout_refund_requests/incoming{?page}`
 
-### List all refunds | GET [GET]
+### List incoming refund requests | GET [GET]
 
 + Parameters
     + page: 1 (optional) - page of results to return
@@ -1245,7 +1221,7 @@ A `refund_request` can have the following states:
 
     + Headers
 
-            Link: <http:/api-sandbox.spli.cash/payout_refund_requests?page=2>; rel="next", <http:/api-sandbox.split.cash/payout_refund_requests?page=8>; rel="last"
+            Link: <http:/api-sandbox.spli.cash/payout_refund_requests/incoming?page=2>; rel="next", <http:/api-sandbox.split.cash/payout_refund_requests/incoming?page=8>; rel="last"
 
     + Body
     
@@ -1257,7 +1233,7 @@ A `refund_request` can have the following states:
                     "initiator_id": "48b89364-1577-4c81-ba02-96705895d457",
                     "authoriser_id": "dc6f1e60-3803-43ca-a200-7d641816f57f",
                     "status": "approved",
-                    "responded_at": "2016-11-23T22:23:11.810Z",
+                    "responded_at": "2016-11-23T22:23:11Z",
                     "credit_ref": "C.1",
                     "amount": 5000
                   },
@@ -1274,59 +1250,13 @@ A `refund_request` can have the following states:
               }
             }
 
-## Request a refund [/payout_refund_requests]
-**Endpoint:** `/payout_refund_requests`
+## Outgoing refund requests [/payout_refund_requests/outgoing{?page}]
+**Endpoint:** `/payout_refund_requests/outgoing{?page}`
 
-Certain rules apply to the creation of a refund:
-
-* Must be applied against a successfully processed payout
-* The refund amount requested from a payout recipient may not exceed the original amount of the payout
-
-> **Note:** The original payout recipient(s) must approve the refund request before the refund gets processed.
-
-### Request a refund | POST [POST]
-#### Body Attributes
-+ Attributes
-    + `debit_ref`: `D.1` (string, required) - The payout ref to refund against
-    + amount: 500 (number, required) - Amount in cents to request from the original payment recipient
-
-+ Request
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-
-    + Body
-    
-            {
-              "debit_ref": "D.1",
-              "amount": 500
-            }
-
-+ Response 201 (application/json)
-
-        {
-          "data": {
-            "ref": "PRR.1",
-            "initiator_id": "48b89364-1577-4c81-ba02-96705895d457",
-            "authoriser_id": "dc6f1e60-3803-43ca-a200-7d641816f57f",
-            "status": "pending_approval",
-            "responded_at": null,
-            "debit_ref": "D.1",
-            "amount": 10000
-          }
-        }
-
-
-## Retrieve or void a refund [/payout_refund_requests/{ref}]
-**Endpoint:** `/payout_refund_requests/{ref}`
-
-A refund request can only be voided if it is still `pending_approval`.
-
-### Retrieve a refund request | GET [GET]
+### List outgoing refund requests | GET [GET]
 
 + Parameters
-    + ref: `PRR.1` (string, required) - refund request ref
+    + page: 1 (optional) - page of results to return
     
 + Request
 
@@ -1335,33 +1265,39 @@ A refund request can only be voided if it is still `pending_approval`.
             Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
     
 + Response 200 (application/json)
-    
-        {
-          "data": {
-            "ref": "PRR.1",
-            "initiator_id": "48b89364-1577-4c81-ba02-96705895d457",
-            "authoriser_id": "dc6f1e60-3803-43ca-a200-7d641816f57f",
-            "status": "pending_approval",
-            "responded_at": null,
-            "debit_ref": "D.1",
-            "amount": 5000
-          }
-        }
-
-### Cancel a refund request | DELETE [DELETE]
-
-A refund request can only be canceled if it is pending approval.
-
-+ Parameters
-    + ref: `PRR.1` (required) - refund request ref
-
-+ Request
 
     + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
 
-+ Response 204
+            Link: <http:/api-sandbox.spli.cash/payout_refund_requests/outgoing?page=2>; rel="next", <http:/api-sandbox.split.cash/payout_refund_requests/outgoing?page=8>; rel="last"
+
+    + Body
+    
+            {
+              "data":
+                [
+                  {
+                    "ref": "RR.1",
+                    "initiator_id": "48b89364-1577-4c81-ba02-96705895d457",
+                    "authoriser_id": "dc6f1e60-3803-43ca-a200-7d641816f57f",
+                    "status": "pending_approval",
+                    "responded_at": null,
+                    "created_at": "2016-12-19T04:34:38Z",
+                    "debit_ref": "D.1",
+                    "amount": 5000
+                  },
+                  {
+                    "ref": "RR.2",
+                    "initiator_id": "ca7bc5b3-e47f-4153-96fb-bbe326b42772",
+                    "authoriser_id": "fb6a9252-3818-44dc-b5aa-2195391a746f",
+                    "status": "declined",
+                    "responded_at": "2016-12-19T04:47:15Z",
+                    "created_at": "2016-12-19T04:34:38Z",
+                    "debit_ref": "D.1",
+                    "amount": 10000
+                  }
+                ]
+              }
+            }
 
 # Group Transactions
 The transactions endpoint provides a detailed look at all past, current and future scheduled debits & credits relating
