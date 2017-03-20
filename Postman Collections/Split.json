@@ -491,6 +491,18 @@
             "description": "Propose an agreement to another Split contact."
           },
           "response": []
+        },
+        {
+          "_postman_id": "515a055c-15a4-73dc-4d6a-cab509362103",
+          "name": "Accept an agreement",
+          "request": {
+            "url": "https://api-sandbox.split.cash/agreements/{ref}/accept",
+            "method": "POST",
+            "header": [],
+            "body": {},
+            "description": "Accept an incoming agreement"
+          },
+          "response": []
         }
       ]
     }
