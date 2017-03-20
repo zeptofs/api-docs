@@ -539,6 +539,18 @@
             "description": "List outgoing agreements"
           },
           "response": []
+        },
+        {
+          "_postman_id": "88daaab4-f901-707f-ffa3-557a9b073d3a",
+          "name": "List incoming agreements",
+          "request": {
+            "url": "https://api-sandbox.split.cash/agreements/incoming",
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "description": "List incoming agreements"
+          },
+          "response": []
         }
       ]
     }
