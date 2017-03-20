@@ -551,6 +551,18 @@
             "description": "List incoming agreements"
           },
           "response": []
+        },
+        {
+          "_postman_id": "3b08b76c-f236-3d12-7ec7-3591ff9feaf5",
+          "name": "https://api-sandbox.split.cash/agreements/{ref}",
+          "request": {
+            "url": "https://api-sandbox.split.cash/agreements/{ref}",
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "description": "Cancel any agreement initiated by the user\nCancel any accepted agreement accepted by the user"
+          },
+          "response": []
         }
       ]
     }
