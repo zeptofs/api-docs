@@ -473,7 +473,7 @@
       "item": [
         {
           "_postman_id": "b93a44ec-b2d3-a67b-4b0c-c10b1afca27a",
-          "name": "Propose agreement",
+          "name": "Propose an agreement",
           "request": {
             "url": "https://api-sandbox.split.cash/agreements",
             "method": "POST",
