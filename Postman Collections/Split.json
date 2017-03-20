@@ -503,6 +503,18 @@
             "description": "Accept an incoming agreement"
           },
           "response": []
+        },
+        {
+          "_postman_id": "f2e09115-cab2-0950-d48c-5c20b9c21a3b",
+          "name": "Decline an agreement",
+          "request": {
+            "url": "https://api-sandbox.split.cash/agreements/{ref}/decline",
+            "method": "POST",
+            "header": [],
+            "body": {},
+            "description": "Decline an incoming proposed agreement"
+          },
+          "response": []
         }
       ]
     }
