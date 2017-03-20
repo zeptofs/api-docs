@@ -500,7 +500,7 @@
             "method": "POST",
             "header": [],
             "body": {},
-            "description": "Accept an incoming agreement"
+            "description": "Accept an incoming proposed agreement"
           },
           "response": []
         },
