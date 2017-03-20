@@ -470,7 +470,29 @@
       "_postman_id": "d589a3c7-6afd-71b5-7a4e-8e63937af11c",
       "name": "Agreements",
       "description": "",
-      "item": []
+      "item": [
+        {
+          "_postman_id": "b93a44ec-b2d3-a67b-4b0c-c10b1afca27a",
+          "name": "Propose agreement",
+          "request": {
+            "url": "",
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"authoriser_id\": \"8df89c16-330f-462b-8891-808d7bdceb7f\",\n\t\t\"terms\": {\n\t\t\t\"per_payout\": {\n\t\t\t\t\"min_amount\": 0,\n\t\t\t\t\"max_amount\": 10000\n\t\t\t},\n\t\t\t\"per_frequency\": {\n\t\t\t\t\"days\": 7,\n\t\t\t\t\"max_amount\": 1000000\n\t\t\t}\n\t\t}\n\t}\n}"
+            },
+            "description": "Propose an agreement to another Split contact."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
