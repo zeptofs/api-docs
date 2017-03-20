@@ -175,7 +175,7 @@
         },
         {
           "_postman_id": "fbe19a79-a5e3-95d6-84a4-5c1f8ae3d90a",
-          "name": "Decline a payment request copy",
+          "name": "Decline a payment request",
           "request": {
             "url": "https://api-sandbox.split.cash/payment_requests/{ref}/decline",
             "method": "POST",
