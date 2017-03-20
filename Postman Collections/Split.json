@@ -261,7 +261,7 @@
       "item": [
         {
           "_postman_id": "c072a9c0-514f-e0ac-6779-cd80c9c1145c",
-          "name": "Renew access token with refresh token",
+          "name": "Exchange refresh token for new access token",
           "request": {
             "url": "https://api-sandbox.split.cash/oauth/token",
             "method": "POST",
