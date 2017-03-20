@@ -486,7 +486,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"authoriser_id\": \"8df89c16-330f-462b-8891-808d7bdceb7f\",\n\t\t\"terms\": {\n\t\t\t\"per_payout\": {\n\t\t\t\t\"min_amount\": 0,\n\t\t\t\t\"max_amount\": 10000\n\t\t\t},\n\t\t\t\"per_frequency\": {\n\t\t\t\t\"days\": 7,\n\t\t\t\t\"max_amount\": 1000000\n\t\t\t}\n\t\t}\n\t}\n}"
+              "raw": "{\n\t\"authoriser_id\": \"8df89c16-330f-462b-8891-808d7bdceb7f\",\n\t\"terms\": {\n\t\t\"per_payout\": {\n\t\t\t\"min_amount\": 0,\n\t\t\t\"max_amount\": 10000\n\t\t},\n\t\t\"per_frequency\": {\n\t\t\t\"days\": 7,\n\t\t\t\"max_amount\": 1000000\n\t\t}\n\t}\n}"
             },
             "description": "Propose an agreement to another Split contact."
           },
