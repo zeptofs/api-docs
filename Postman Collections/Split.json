@@ -515,6 +515,18 @@
             "description": "Decline an incoming proposed agreement"
           },
           "response": []
+        },
+        {
+          "_postman_id": "17ac6bea-04c8-765d-3d7b-fc2b2ca65741",
+          "name": "Get an agreement",
+          "request": {
+            "url": "https://api-sandbox.split.cash/agreements/{ref}",
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "description": "Get an incoming or outgoing agreement"
+          },
+          "response": []
         }
       ]
     }
