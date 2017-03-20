@@ -554,7 +554,7 @@
         },
         {
           "_postman_id": "3b08b76c-f236-3d12-7ec7-3591ff9feaf5",
-          "name": "https://api-sandbox.split.cash/agreements/{ref}",
+          "name": "Canal an agreement",
           "request": {
             "url": "https://api-sandbox.split.cash/agreements/{ref}",
             "method": "DELETE",
