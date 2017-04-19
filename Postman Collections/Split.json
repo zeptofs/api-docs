@@ -367,7 +367,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"for_ref\": \"D.1\",\n\t\"amount\": 100\n}"
+              "raw": "{\n\t\"for_ref\": \"D.1\",\n\t\"amount\": 100,\n\t\"reason\": \"Because reasons\"\n}"
             },
             "description": "Request a refund against a previously successfully processed payout."
           },
