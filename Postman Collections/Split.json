@@ -155,7 +155,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"authoriser_id\": \"fb6a9252-3818-44dc-b5aa-2195391a746f\",\n  \"description\": \"Visible to both initiator and authoriser\",\n  \"matures_at\": \"2016-12-25T00:00:00Z\",\n  \"amount\": 99000\n}\n"
+              "raw": "{\n  \"authoriser_id\": \"fb6a9252-3818-44dc-b5aa-2195391a746f\",\n  \"description\": \"Visible to both initiator and authoriser\",\n  \"matures_at\": \"2016-12-25T00:00:00Z\",\n  \"amount\": 99000,\n  \"custom\": {\n\t\"my_custom_key\": \"some value\",\n\t\"another_custom_key\": \"some more value\"\n  }\n}\n"
             },
             "description": "Send a payment request to another Split account"
           },
