@@ -232,6 +232,18 @@
             "description": "Cancel an outgoing payment request that has not yet been approved or declined."
           },
           "response": []
+        },
+        {
+          "_postman_id": "cf8fa964-0b56-3ede-220b-2fc119648fec",
+          "name": "Get a payment request's history",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payment_requests/{ref}/history",
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "description": "Gives you visibility of the entire payment request lifecycle including the generated debit and credit transactions."
+          },
+          "response": []
         }
       ]
     },
