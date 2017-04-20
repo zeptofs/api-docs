@@ -27,7 +27,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"description\": \"Only visible to payer\",\n\t\"matures_at\": \"2016-12-18T00:00:00Z\",\n\t\"payouts\":[\n\t\t{\n\t\t\t\"amount\": 4000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"fb6a9252-3818-44dc-b5aa-2195391a746f\"\n\t\t},\n\t\t{\n\t\t\t\"amount\":6000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"4541b21d-e6ea-401b-8ff4-cad83825c732\"\n\t\t}\n\t],\n\t\"custom\": {\n\t\t\"my_custom_key\": \"some value\",\n\t\t\"another_custom_key\": \"some more value\"\n\t}\n  }\n}"
+              "raw": "{\n\t\"description\": \"Only visible to payer\",\n\t\"matures_at\": \"2016-12-18T00:00:00Z\",\n\t\"payouts\":[\n\t\t{\n\t\t\t\"amount\": 4000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"fb6a9252-3818-44dc-b5aa-2195391a746f\"\n\t\t},\n\t\t{\n\t\t\t\"amount\":6000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"4541b21d-e6ea-401b-8ff4-cad83825c732\"\n\t\t}\n\t],\n\t\"custom\": {\n\t\t\"my_custom_key\": \"some value\",\n\t\t\"another_custom_key\": \"some more value\"\n\t}\n}"
             },
             "description": ""
           },
