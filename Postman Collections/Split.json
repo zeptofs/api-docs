@@ -8,64 +8,93 @@
   },
   "item": [
     {
-      "_postman_id": "25a13235-5faf-005a-ac13-078f8099f832",
-      "name": "Payments & payouts",
+      "_postman_id": "a0388949-d100-0fbc-97af-a8ec8a9c3e79",
+      "name": "Authentication",
       "description": "",
       "item": [
         {
-          "_postman_id": "4dc9af02-a593-2061-2ad7-5f1fe79c37a6",
-          "name": "Make a payment",
+          "_postman_id": "c072a9c0-514f-e0ac-6779-cd80c9c1145c",
+          "name": "Exchange refresh token for new access token",
           "request": {
-            "url": "https://api-sandbox.split.cash/payments",
+            "url": "https://api-sandbox.split.cash/oauth/token",
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "description": ""
-              }
-            ],
+            "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\n\t\"description\": \"Only visible to payer\",\n\t\"matures_at\": \"2016-12-18T00:00:00Z\",\n\t\"payouts\":[\n\t\t{\n\t\t\t\"amount\": 4000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"fb6a9252-3818-44dc-b5aa-2195391a746f\"\n\t\t},\n\t\t{\n\t\t\t\"amount\":6000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"4541b21d-e6ea-401b-8ff4-cad83825c732\"\n\t\t}\n\t],\n\t\"custom\": {\n\t\t\"my_custom_key\": \"some value\",\n\t\t\"another_custom_key\": \"some more value\"\n\t}\n}"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "grant_type",
+                  "value": "refresh_token",
+                  "type": "text",
+                  "enabled": true
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{ client_id }}",
+                  "type": "text",
+                  "enabled": true
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{ client_secret }}",
+                  "type": "text",
+                  "enabled": true
+                },
+                {
+                  "key": "refresh_token",
+                  "value": "{{ refresh_token }}",
+                  "type": "text",
+                  "enabled": true
+                }
+              ]
+            },
+            "description": "Has your access token expired? POST your refresh token back to us and we'll provide you with a new access token."
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "8794ea2f-d855-7118-dd4c-df5795e35484",
+          "name": "Get access & refresh token pair",
+          "request": {
+            "url": "https://api-sandbox.split.cash/oauth/token",
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "type": "text",
+                  "enabled": true
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{ client_id }}",
+                  "type": "text",
+                  "enabled": true
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{ client_secret }}",
+                  "type": "text",
+                  "enabled": true
+                },
+                {
+                  "key": "code",
+                  "value": "{{ authorization_code }}",
+                  "type": "text",
+                  "enabled": true
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://www.getpostman.com/oauth2/callback",
+                  "type": "text",
+                  "enabled": true
+                }
+              ]
             },
             "description": ""
-          },
-          "response": []
-        },
-        {
-          "_postman_id": "5056db71-9539-477a-a65b-5bdd7f7fcba2",
-          "name": "Get a payment",
-          "request": {
-            "url": "https://api-sandbox.split.cash/payments/{ref}",
-            "method": "GET",
-            "header": [],
-            "body": {},
-            "description": "View a specific payment's details"
-          },
-          "response": []
-        },
-        {
-          "_postman_id": "0892a889-3c3d-4fe3-919f-4e90016b992f",
-          "name": "Get all payments",
-          "request": {
-            "url": "https://api-sandbox.split.cash/payments",
-            "method": "GET",
-            "header": [],
-            "body": {},
-            "description": "Retrieve all payment belonging to user"
-          },
-          "response": []
-        },
-        {
-          "_postman_id": "539d2529-e631-6c9d-b6e5-24b791a69798",
-          "name": "Void a payout",
-          "request": {
-            "url": "https://api-sandbox.split.cash/payouts/{ref}",
-            "method": "DELETE",
-            "header": [],
-            "body": {},
-            "description": "Payments cannot be voided. You can however void all its payouts which has the the same effect.\n\nYou can only void a payout if it's has not yet matured and Split hasn't started processing it.\n\nNote the endpoint is `payouts/` and not `payments/`"
           },
           "response": []
         }
@@ -248,112 +277,64 @@
       ]
     },
     {
-      "_postman_id": "961677e8-9aeb-bdbd-d884-d92515e2bbcb",
-      "name": "Transactions",
+      "_postman_id": "25a13235-5faf-005a-ac13-078f8099f832",
+      "name": "Payments & payouts",
       "description": "",
       "item": [
         {
-          "_postman_id": "d12166fd-2962-364f-6a61-bf89de9354c3",
-          "name": "List all transactions",
+          "_postman_id": "4dc9af02-a593-2061-2ad7-5f1fe79c37a6",
+          "name": "Make a payment",
           "request": {
-            "url": "https://api-sandbox.split.cash/transactions",
-            "method": "GET",
-            "header": [],
-            "body": {},
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "_postman_id": "a0388949-d100-0fbc-97af-a8ec8a9c3e79",
-      "name": "Authentication",
-      "description": "",
-      "item": [
-        {
-          "_postman_id": "c072a9c0-514f-e0ac-6779-cd80c9c1145c",
-          "name": "Exchange refresh token for new access token",
-          "request": {
-            "url": "https://api-sandbox.split.cash/oauth/token",
+            "url": "https://api-sandbox.split.cash/payments",
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
             "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "grant_type",
-                  "value": "refresh_token",
-                  "type": "text",
-                  "enabled": true
-                },
-                {
-                  "key": "client_id",
-                  "value": "{{ client_id }}",
-                  "type": "text",
-                  "enabled": true
-                },
-                {
-                  "key": "client_secret",
-                  "value": "{{ client_secret }}",
-                  "type": "text",
-                  "enabled": true
-                },
-                {
-                  "key": "refresh_token",
-                  "value": "{{ refresh_token }}",
-                  "type": "text",
-                  "enabled": true
-                }
-              ]
+              "mode": "raw",
+              "raw": "{\n\t\"description\": \"Only visible to payer\",\n\t\"matures_at\": \"2016-12-18T00:00:00Z\",\n\t\"payouts\":[\n\t\t{\n\t\t\t\"amount\": 4000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"fb6a9252-3818-44dc-b5aa-2195391a746f\"\n\t\t},\n\t\t{\n\t\t\t\"amount\":6000,\n\t\t\t\"description\": \"Visible to the recipient and payer\",\n\t\t\t\"recipient_id\": \"4541b21d-e6ea-401b-8ff4-cad83825c732\"\n\t\t}\n\t],\n\t\"custom\": {\n\t\t\"my_custom_key\": \"some value\",\n\t\t\"another_custom_key\": \"some more value\"\n\t}\n}"
             },
-            "description": "Has your access token expired? POST your refresh token back to us and we'll provide you with a new access token."
+            "description": ""
           },
           "response": []
         },
         {
-          "_postman_id": "8794ea2f-d855-7118-dd4c-df5795e35484",
-          "name": "Get access & refresh token pair",
+          "_postman_id": "5056db71-9539-477a-a65b-5bdd7f7fcba2",
+          "name": "Get a payment",
           "request": {
-            "url": "https://api-sandbox.split.cash/oauth/token",
-            "method": "POST",
+            "url": "https://api-sandbox.split.cash/payments/{ref}",
+            "method": "GET",
             "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "grant_type",
-                  "value": "authorization_code",
-                  "type": "text",
-                  "enabled": true
-                },
-                {
-                  "key": "client_id",
-                  "value": "{{ client_id }}",
-                  "type": "text",
-                  "enabled": true
-                },
-                {
-                  "key": "client_secret",
-                  "value": "{{ client_secret }}",
-                  "type": "text",
-                  "enabled": true
-                },
-                {
-                  "key": "code",
-                  "value": "{{ authorization_code }}",
-                  "type": "text",
-                  "enabled": true
-                },
-                {
-                  "key": "redirect_uri",
-                  "value": "https://www.getpostman.com/oauth2/callback",
-                  "type": "text",
-                  "enabled": true
-                }
-              ]
-            },
-            "description": ""
+            "body": {},
+            "description": "View a specific payment's details"
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "0892a889-3c3d-4fe3-919f-4e90016b992f",
+          "name": "Get all payments",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payments",
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "description": "Retrieve all payment belonging to user"
+          },
+          "response": []
+        },
+        {
+          "_postman_id": "539d2529-e631-6c9d-b6e5-24b791a69798",
+          "name": "Void a payout",
+          "request": {
+            "url": "https://api-sandbox.split.cash/payouts/{ref}",
+            "method": "DELETE",
+            "header": [],
+            "body": {},
+            "description": "Payments cannot be voided. You can however void all its payouts which has the the same effect.\n\nYou can only void a payout if it's has not yet matured and Split hasn't started processing it.\n\nNote the endpoint is `payouts/` and not `payments/`"
           },
           "response": []
         }
@@ -454,6 +435,25 @@
             "header": [],
             "body": {},
             "description": "Cancel an outgoing refund request that has not yet been approved or declined."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "_postman_id": "961677e8-9aeb-bdbd-d884-d92515e2bbcb",
+      "name": "Transactions",
+      "description": "",
+      "item": [
+        {
+          "_postman_id": "d12166fd-2962-364f-6a61-bf89de9354c3",
+          "name": "List all transactions",
+          "request": {
+            "url": "https://api-sandbox.split.cash/transactions",
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "description": ""
           },
           "response": []
         }
@@ -577,6 +577,12 @@
           "response": []
         }
       ]
+    },
+    {
+      "_postman_id": "a4112ce1-7b46-cf8a-800f-c47d9a6b74bc",
+      "name": "Refunds",
+      "description": "Issue refunds, list your issued (outgoing) refunds, list refunds issued to you (incoming)",
+      "item": []
     }
   ]
 }
