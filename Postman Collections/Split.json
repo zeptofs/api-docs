@@ -306,7 +306,7 @@
           "_postman_id": "5056db71-9539-477a-a65b-5bdd7f7fcba2",
           "name": "Get a payment",
           "request": {
-            "url": "https://api-sandbox.split.cash/payments/{ref}",
+            "url": "https://api-sandbox.split.cash/payments/{{ref}}",
             "method": "GET",
             "header": [],
             "body": {},
