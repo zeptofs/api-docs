@@ -603,6 +603,18 @@
             "description": ""
           },
           "response": []
+        },
+        {
+          "_postman_id": "320a7d6d-1083-52b8-3c73-eb0d3134bebd",
+          "name": "Get incoming refunds",
+          "request": {
+            "url": "https://api-sandbox.split.cash/refunds/incoming",
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "description": ""
+          },
+          "response": []
         }
       ]
     }
