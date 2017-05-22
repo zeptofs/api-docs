@@ -42,7 +42,7 @@
                 },
                 {
                   "key": "refresh_token",
-                  "value": "{{refresh_token}}}",
+                  "value": "{{refresh_token}}",
                   "type": "text",
                   "enabled": true
                 }
