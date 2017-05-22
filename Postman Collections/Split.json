@@ -636,7 +636,7 @@
             "method": "GET",
             "header": [],
             "body": {},
-            "description": "Get a refund by its reference"
+            "description": "List all refunds that have been issued by the account"
           },
           "response": []
         }
