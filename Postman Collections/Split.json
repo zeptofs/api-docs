@@ -618,7 +618,7 @@
         },
         {
           "_postman_id": "66be32e6-67bb-d3d9-14b6-1c653c7253fa",
-          "name": "List incoming refunds copy",
+          "name": "List outgoing refunds",
           "request": {
             "url": "https://api-sandbox.split.cash/refunds/incoming",
             "method": "GET",
