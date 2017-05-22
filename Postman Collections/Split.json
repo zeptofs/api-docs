@@ -632,11 +632,11 @@
           "_postman_id": "bbaf3a20-0f74-94b9-a2bb-1dd1960ef84e",
           "name": "Get a refund",
           "request": {
-            "url": "https://api-sandbox.split.cash/refunds/outgoing",
+            "url": "https://api-sandbox.split.cash/refunds/{{ref}}",
             "method": "GET",
             "header": [],
             "body": {},
-            "description": "List all refunds that have been issued by the account"
+            "description": "Get a refund by its reference"
           },
           "response": []
         }
