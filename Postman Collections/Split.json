@@ -620,7 +620,7 @@
           "_postman_id": "66be32e6-67bb-d3d9-14b6-1c653c7253fa",
           "name": "List outgoing refunds",
           "request": {
-            "url": "https://api-sandbox.split.cash/refunds/incoming",
+            "url": "https://api-sandbox.split.cash/refunds/outgoing",
             "method": "GET",
             "header": [],
             "body": {},
