@@ -459,7 +459,7 @@
               }
             ],
             "body": {},
-            "description": ""
+            "description": "See http://docs.split.apiary.io/reference/transactions for a list of filters"
           },
           "response": []
         }
