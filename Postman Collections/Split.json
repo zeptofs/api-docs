@@ -582,7 +582,20 @@
       "_postman_id": "a4112ce1-7b46-cf8a-800f-c47d9a6b74bc",
       "name": "Refunds",
       "description": "Issue refunds, list your issued (outgoing) refunds, list refunds issued to you (incoming)",
-      "item": []
+      "item": [
+        {
+          "_postman_id": "0b2f5df0-23fc-4a3b-7aca-5d71c41700df",
+          "name": "Issue a refund",
+          "request": {
+            "url": "",
+            "method": "GET",
+            "header": [],
+            "body": {},
+            "description": ""
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
