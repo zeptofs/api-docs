@@ -587,8 +587,8 @@
           "_postman_id": "0b2f5df0-23fc-4a3b-7aca-5d71c41700df",
           "name": "Issue a refund",
           "request": {
-            "url": "",
-            "method": "GET",
+            "url": "https://api-sandbox.split.cash/credits/{{ref}}}/refunds",
+            "method": "POST",
             "header": [],
             "body": {},
             "description": ""
