@@ -589,8 +589,17 @@
           "request": {
             "url": "https://api-sandbox.split.cash/credits/{{ref}}}/refunds",
             "method": "POST",
-            "header": [],
-            "body": {},
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": ""
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500,\n  \"reason\": \"Because reason\",\n  \"custom\": {\n    \"custom_key\": \"Custom string\",\n    \"another_custom_key\": \"Maybe a URL\"\n  }\n}"
+            },
             "description": ""
           },
           "response": []
