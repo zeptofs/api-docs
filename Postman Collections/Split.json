@@ -624,7 +624,7 @@
             "method": "GET",
             "header": [],
             "body": {},
-            "description": "List all refunds that have been issued to the account"
+            "description": "List all refunds that have been issued by the account"
           },
           "response": []
         }
