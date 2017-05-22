@@ -449,9 +449,15 @@
           "_postman_id": "d12166fd-2962-364f-6a61-bf89de9354c3",
           "name": "List all transactions",
           "request": {
-            "url": "https://api-sandbox.split.cash/transactions",
+            "url": "https://api-sandbo.split.dev/transactions",
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer 3f48e9472fcd394351ef530345c3801f809414779869193beb66c4ee9a3d2a7a",
+                "description": ""
+              }
+            ],
             "body": {},
             "description": ""
           },
