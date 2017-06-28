@@ -25,26 +25,22 @@
                 {
                   "key": "grant_type",
                   "value": "refresh_token",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 },
                 {
                   "key": "client_id",
                   "value": "{{client_id}}",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 },
                 {
                   "key": "client_secret",
                   "value": "{{client_secret}}",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 },
                 {
                   "key": "refresh_token",
                   "value": "{{refresh_token}}",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 }
               ]
             },
@@ -65,32 +61,27 @@
                 {
                   "key": "grant_type",
                   "value": "authorization_code",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 },
                 {
                   "key": "client_id",
                   "value": "{{ client_id }}",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 },
                 {
                   "key": "client_secret",
                   "value": "{{ client_secret }}",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 },
                 {
                   "key": "code",
                   "value": "{{ authorization_code }}",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 },
                 {
                   "key": "redirect_uri",
                   "value": "https://www.getpostman.com/oauth2/callback",
-                  "type": "text",
-                  "enabled": true
+                  "type": "text"
                 }
               ]
             },
