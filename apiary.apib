@@ -2,16 +2,100 @@ FORMAT: 1A
 HOST: https://api-sandbox.split.cash/
 
 # Split API V1
-![Split](https://raw.githubusercontent.com/krakendevelopments/public_assets/master/images/Split_Logo_rgb.png)
+![Split](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/Split_Logo_rgb.png)
 
 Welcome to the Split V1 API documentation. Use the Split API to help streamline your financial processes and supercharge your current system.
 
-## Quick start
+## Overview
 
-### 1. Create a Split account
+* Authentication is performed using OAuth2. See the [Get started](/#introduction/guides/get-started) and [Authentication & Authorisation](/#introduction/guides/authentication-and-authorisation) guides for more.
+* All communication is via `https`.
+* The production API is accessed from `https://api.split.cash/`.
+* The production UI is accessed from `https://go.split.cash/`.
+* The sandbox API is accessed from `https://api-sandbox.split.cash/`.
+* The sandbox UI is accessed from `https://go-sandbox.split.cash/`.
+* Data is sent and received as JSON.
+* Currencies are represented by 3 characters as defined in [ISO 4217](http://www.xe.com/iso4217.php).
+* Dates & times are returned in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format with second accuracy.
+* Amounts are always in cents with no decimals unless otherwise stated.
+* This documentation and supporting tools uses the sandbox environment. When you're ready to go live simply remove the `-sandbox.` from the API URL.
+
+## Guides
+
+### Play with the API without coding
+The best way to familiarise yourself with our API is by interacting with it. We suggest you use the free [Postman](https://www.getpostman.com/) app
+where we've prepared all our API endpoints in a tidy collection ready for you to play with. No coding necessary!
+
+#### Step-by-step
+The following uses the OAuth2 process built-in to [Postman](https://www.getpostman.com/) in order to obtain an authorisation code from a user and finally exchange it for an `access_token/refresh_token` pair.
+
+1. **Ensure you have Postman installed**
+
+    [Get Postman](https://www.getpostman.com/)
+    
+2. **Create a Split account**
+    
+    If you haven't already, you'll want to create a sandbox Split account at https://go-sandbox.split.cash
+
+3. **Register your application with Split**
+
+    Once you've got your account up and running, sign in and create an OAuth2 application: https://go-sandbox.split.cash/oauth/applications.
+    [![Split OAuth2 app setup](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/split_oauth2_app_setup.png)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/split_oauth2_app_setup.png)
+    
+4. **Add the Split API collection to Postman**
+
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/988421dc8fb7d55526d5)
+
+5. **Within Postman, click on the _Authorization_ sub-tab.**
+    
+    [![Postman Authorization tab](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_authorization_tab.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_authorization_tab.jpg)
+
+6. **Select _OAuth 2.0_ in the _Type_ dropdown.**
+
+    [![Postman OAuth2 selection](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_oauth2_selection.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_oauth2_selection.jpg)
+
+7. **Click _Get New Access Token_**.
+    [![Postman get new access token](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_get_new_access_token.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_get_new_access_token.jpg)
+
+8. **Fill in the OAuth2 form**
+    * Replace _Client ID_ & _Client Secret_ with the _Application ID_ and _Secret_ you got when you registered your app in step 3.
+    * Ensure you enter all the same [scopes](/#introduction/guides/scopes) exactly that same way you did in step 3.
+    [![Postman OAuth2](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_oauth2_form.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_oauth2_form.jpg)
+    
+9. **Click _Request Token_ and wait a few seconds.**
+10. **A browser window will popup**
+
+    Sign in with a Split account (or create a new one).
+    [![Signin Split to authorise via OAuth2](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/split_oauth2_signin.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/split_oauth2_signin.jpg)
+
+11. **Authorise the application**
+    * Click _Authorise_ to allow the app to access the signed in account. Once complete, Postman will automatically exchange the authorisation code it received from Split for the `access_token/refresh_token` pair.
+    It will then store the `access_token/refresh_token` for you to use in subsequent requests API requests. The `access_token` effectively allows you to send requests via the API as the user who provided you authorisation.
+    [![Authorise OAuth2 app](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/oauth2_app_authorise.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/oauth2_app_authorise.jpg)
+
+11. **You're now ready to use the API**
+
+    Select an endpoint from the Split collection from the left hand side menu. Before you send an API request ensure you click on **Use Token** then select the stored token.
+    [![Postman use token](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_use_token.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_use_token.jpg)
+    
+    Postman will automatically place the newly acquired **access_token** in the request header therefore allowing your request to be authenticated.
+    [![Postman using token](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_authorization_header.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/postman_authorization_header.jpg)
+    
+    Remember to select **Use Token** everytime you try a new endpoint. Have fun!
+
+### Get started
+This guide will help you setup your OAuth2 app in order to get authenticated & authorised to communicate with the Split API.
+
+
+**Before you start:**
+
+* Often times you'll want to grant your own app access to itself so that you can access the API on your own account. We use the term **user** below but the user can be a third party or the same user that owns the OAuth2 application.
+* As noted below, the access token expires every 2 hours. To get a new access token without going through steps 1 to 4 again, use the [refresh grant strategy](/#introduction/guides/authentication-and-authorisation) to swap a refresh token for a new access token.
+
+#### 1. Create a Split account
 If you haven't already, you'll want to create a sandbox Split account at https://go-sandbox.split.cash
 
-### 2. Register your application with Split
+#### 2. Register your application with Split
 Once you've got your account up and running, sign in and create an OAuth2 profile for your application: https://go-sandbox.split.cash/oauth/applications
 
 | Parameter | Description |
@@ -19,42 +103,25 @@ Once you've got your account up and running, sign in and create an OAuth2 profil
 | **Name**  | The name of your application. When using the the *Authorisation Grant Flow*, users will see this name as the application requesting access to their account. |
 | **Redirect URI** | Set this to your application's endpoint charged with receiving the authorisation code. If you're using [Postman](https://www.getpostman.com/) to play with the API, use the Postman callback URL: `https://www.getpostman.com/oauth2/callback` |
 
-### 2.a Quick fun
-Perform this optional step if you just want to play with the API without writing any code, otherwise continue to [3. Obtain authorisation code](#introduction/quick-start/3.-obtain-authorisation-code).
-
-The following uses the OAuth2 process built-in to [Postman](https://www.getpostman.com/) in order to obtain an authorisation code from a user and finally exchange it for an access code.
-
-1. Add the Split API collection to Postman: [![Run in Postman](https://run.pstmn.io/button.png)](https://www.getpostman.com/run-collection/7e421b9ba68f3d37bd7c)
-2. Within Postman, click on any of the Split endpoints.
-3. Click on the **Authorization** sub-tab.
-4. Select **OAuth 2.0** in the **Type** dropdown.
-5. Click **Get New Access Token**.
-6. Fill in the form, replacing `{{ application_id }}` & `{{ application_secret }}` with the ones you got when you registered your app in step 2.
-![Postman OAuth2](https://raw.githubusercontent.com/krakendevelopments/public_assets/master/images/postman_oauth2_form.png)
-7. Click **Request Token** and wait a few seconds.
-8. Go through the authorisation process, once complete, Postman will store the `access_token` and `refresh_token` for you to use in subsequent requests.
-9. Click on **Use Token** and Postman will automatically place the newly acquired **access_token** in the request header, ready for your first request to the SPlit API.
-10. You no longer have to perform the following steps 3, 4 & 5.
-
-### 3. Obtain authorisation code
-Construct the initial URL the user will need to visit in order to grant your application permission to act on his/her behalf. The constructed URL describes the level of permission (`scope`),
-the application requesting permission (`client_id`) and where the user gets redirected once they've grant permission (`redirect_uri`).
+#### 3. Obtain authorisation code
+Construct the initial URL the user will need to visit in order to grant your application permission to act on his/her behalf. The constructed URL describes the level of permission ([`scope`](/#introduction/guides/scopes)),
+the application requesting permission (`client_id`) and where the user gets redirected once they've granted permission (`redirect_uri`).
 
 The URL should be formatted to look like this:
 `https://go-sandbox.split.cash/oauth/authorize?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}`
 
 | Parameter | Description |
 |-----------|-------------|
-| `response_code` | Always set to `code` |
+| `response_type` | Always set to `code` |
 | `client_id` | This is your `Application Id` as generated when you registered your application with Split |
 | `redirect_uri` | URL where the user will get redirected along with the newly generated authorisation code |
-| `scope` | The scope of permission you're requesting |
+| `scope` | The [scope](/#introduction/guides/scopes) of permission you're requesting |
 
-### 4. Exchange authorisation code for access token
+#### 4. Exchange authorisation code for access token
 When the user visits the above-mentioned URL, they will be presented with a Split login screen and then an authorisation screen:
-![Split authorisation screen](https://raw.githubusercontent.com/krakendevelopments/public_assets/master/images/oauth_authorise.png)
+[![Split authorisation screen](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/oauth2_app_authorise.jpg)](https://raw.githubusercontent.com/splitpayments/public_assets/master/images/oauth2_app_authorise.jpg)
 
-After the user has visited the URL in step 3 and authorised your application, the will be returned to your application at the URL specified in `redirect_uri` along with the `code` query parameter as the authorisation code.
+After the user has visited the URL in step 3 and authorised your application, they will be returned to your application at the URL specified in `redirect_uri` along with the `code` query parameter as the authorisation code.
 
 Finally, the authorisation code can than be exchanged for an access token and refresh token pair by POSTing to: `https://go-sandbox.split.cash/oauth/token`
 
@@ -67,46 +134,42 @@ Finally, the authorisation code can than be exchanged for an access token and re
 | `redirect_uri` | Same URL used in step 3 |
 | `scope` | The scope of permission you're requesting |
 
-### 5. Wrap-up
-You should now have an access token and refresh token which allows you to interact with the Split API as the user related to the access token.
+After successfully posting the above to `https://go-sandbox.split.cash/oauth/token` you will receive a response that looks like this:
+
+```
+{
+  "access_token": "332c51e0d6750accb4caabd4d9c5ebb6371e6754febf2809767022e3499a1be6",
+  "token_type": "bearer",
+  "expires_in": 7200,
+  "refresh_token": "0a6b77e4b2b088d58867e61e1ce793cb2d0d8c641c144fcbc7a502265d9105b1",
+  "scope": "public contacts payments payment_requests refund_requests transactions",
+  "created_at": 1488151072
+}
+```
+
+#### 5. Wrap-up
+Now that you have an access token and refresh token, you can interact with the Split API as the user related to the access token.
 To do so, you must simply append the access token to the header of any API request: `Authorization: Bearer {access_token}`
 
-**Notes:**
 
-* Often times you'll want to grant your own app access to itself. To do this, you must go through steps 1 to 4 and on step 3 authenticate using the same user that owns the application as registered with Split.
-* As noted above, the access token expires every 2 hours. To get a new access token without going through steps 1 to 4 again, use the refresh grant strategy to swap a refresh token for a new access token.
+### Authentication and Authorisation
 
-## Schema
-
-* All communication is via `https`
-* The production API is accessed from `https://api.split.cash/`.
-* The production UI is accessed from `https://go.split.cash/`.
-* The sandbox API is accessed from `https://api-sandbox.split.cash/`
-* The sandbox UI is accessed from `https://go-sandbox.split.cash/`
-* Data is sent and received as JSON.
-* Currencies are represented by 3 characters as defined in [ISO 4217](http://www.xe.com/iso4217.php).
-* Dates & times are returned in UTC using [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format with millisecond accuracy.
-* Amounts are always in cents with no decimals unless otherwise stated.
-* This documentation and supporting tools uses the sandbox environment. When you're ready to go live simply remove the `-sandbox.` from the API URL.
-
-## Playground
-The best way to familiarise yourself with our API is by interacting with it. We suggest you use the free [Postman](https://www.getpostman.com/) app
-where we've prepared all our API endpoints in a tidy collection ready for you to play with.
-
-Click the button below to import our Split collection and get started:
-
-[![Run in Postman](https://run.pstmn.io/button.png)](https://www.getpostman.com/run-collection/7e421b9ba68f3d37bd7c)
-
-## Authentication and Authorisation
 Split uses OAuth2 over https to manage authentication and authorisation.
 
-We currently support the following types of OAuth2 grants:
+OAuth2 is a protocol that lets external applications request permission from another Split user to send requests on their behalf without getting their password.
+This is preferred over Basic Authentication because access tokens can be limited by scope and can be revoked by the user at any time.
 
-### Authorisation Code Grant
+New to OAuth2? DigitalOcean has a fantastic 5 minute [introduction to OAuth2](https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2#grant-type-authorization-code).
+
+We currently support the **authorisation code** and **refresh token** grants.
+
+#### Authorisation Code Grant
 This type of grant allows your application to act on behalf of a user. If you've ever used a website or application with your
-Google, Twitter or Facebook account, this is the grant being used. See the [Getting Started section](#introduction/getting-started) more details.
+Google, Twitter or Facebook account, this is the grant being used.
 
-#### Example POSTing an authorisation code with cURL to get an access & refresh token pair
+See the [Get started section](/#introduction/guides/get-started) for step by step details on how to use this grant.
+
+##### Example POSTing an authorisation code with cURL to get an access & refresh token pair
 **Request**
 
 ```
@@ -130,14 +193,14 @@ curl -F "grant_type=authorization_code" \
 }
 ```
 
-### Refresh Token Grant
+#### Refresh Token Grant
 When using the authorisation code grant above, Split will return a `refresh token` along with the access token. Access tokens are short lived and last 2 hours but refresh tokens do not expire.
 When the access token expires, instead of sending the user back through the authorisation flow you can use the refresh token to retrieve a new access token with the same permissions as the old one.
 
 > **Note:** The `refresh_token` gets regenerated and sent alongside the new `access_token`. In other words, `refresh_token`s are single use so you'll
 want to store the newly generated `refresh_token` everytime you use it to get a new `acccess_token`
 
-#### Example POSTing a refresh token with cURL to get a new access & refresh token pair
+##### Example POSTing a refresh token with cURL to get a new access & refresh token pair
 **Request**
 
 ```
@@ -164,21 +227,61 @@ curl -F "grant_type=refresh_token" \
 ### Client Credentials Grant
 This is the grant you want to use when you want your application to act on an account which belongs to itself.                                             
 --->
-
 ### Scopes
-When requesting access you need to pass along with it the level of access you require. These are called scopes and Split supports the following:
+Scopes define the level of access granted via the OAuth2 authorisation process. As a best practice, only use the scopes your application will require.
 
 | Scope | Description |
 |--------|------------|
 | `public` | View user's public information |
-| `agreements` | Manage user's agreements **(Coming soon)** |
+| `agreements` | Manage user's agreements |
 | `contacts` | Manage user's contacts |
 | `payments` | Manage user's payments |
 | `payment_requests` | Manage user's payment requests |
 | `refund_requests` | Manage user's refund requests |
+| `refunds` | Manage user's refunds |
 | `transactions` | Access user's transactions |
 
-## Pagination
+### Make a payment & get paid
+Split can get, make & manage payments. This guide quickly covers supported avenues of each action.
+
+#### Make a payment
+In order to payout funds, you'll be looking to use the [Payments](/#reference/payments) endpoint.
+
+Common use cases:
+
+* Automated payout disbursement (Referal programs, net/commission payouts, etc...)
+
+#### Get paid
+There are 2 ways to get paid:
+
+**A [Payment Request](/#reference/payment-requests)**
+
+Provides the ability to send a Payment Request to any contact with a verified bank account in your Split contacts list.
+
+* By default, the payer will receive a request that they must approve in order for the funds to flow from their bank account to yours.
+* The approval process can be automated by first entering into an agreement with the payer. Once the agreement is approved, any future Payment Request will be automatically approved and processed per the agreement terms.
+
+Common use cases:
+
+* Subscriptions
+* On-account balance payments
+* Bill smoothing
+* Repayment plans
+
+**An [Open Payment Request](http://help.split.cash/payment-requests/open-payment-requests)**
+
+Utilise a [customisable hosted payment request form](http://help.split.cash/payment-requests/open-payment-requests) which takes care of everything from confirming payer bank account access to the transfer of funds.
+
+* The secure form can either sit outside your app or embeded within via iframe with ability to whitelabel.
+* The URL for the form contains all the customisation parameters enabling you to generate the form on the fly.
+
+Common use cases:
+
+* Online or offline purchases (eCommerce, fundraiser, etc...)
+* Invoice payment
+* Group funding (paying for a restaurant bill)
+
+### Pagination
 All collections are paginated to 100 items by default. You can request the following page by appending `?page=x` where `x` is the page you'd like to retrieve.
 
 You can extract the pagination information from the response header:
@@ -188,33 +291,139 @@ Link: <https://api-sandbox.split.cash/payments?page=2>; rel="next",
   <https://api-sandbox.split.cash/payments?page=15>; rel="last"
 ```
 
-## Response Codes
+### Response Codes
 The common [HTTP Response Status Codes](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) are used with all responses.
+
+### Idempotent requests
+The Split API supports idempotency for safely retrying requests without accidentally performing the same operation twice.
+For example, if a [Payment](#reference/payments) is `POST`ed and a there is a network connection error, you can retry the Payment with the same idempotency key to guarantee that only a single Payment is created.
+
+To perform an idempotent request, provide an additional `Idempotency-Key: <key>` header to the request.
+You can pass any value as the key but we suggest that you use [V4 UUIDs](https://www.uuidgenerator.net/) or another appropriately random string.
+
+Keys expire after 24 hours. If there is a subsequent request with the same idempotency key within the 24 hour period, we will return a `409 Conflict` response with the following body:
+
+```
+{
+  "errors": [
+    {
+      "title": "Duplicate idempotency key"),
+      "detail": "A resource has already been created with this idempotency key",
+      links: {
+        "about": "A resource has already been created with this idempotency key"
+      },
+      "meta": {
+        "resource_ref": "PB.1a4"
+      }
+    }
+  ]
+}
+```
+
+* The `meta.resource_ref` value is the reference of the resource that was previously created with the conflicting idempotency key.
+* The `Idempotency-Key` header is optional but recommended.
+* Only the `POST` action for the Payments, Payment Requests, Refunds, Refund Requests support the use of the `Idempotency-Key`
+* Endpoints that use the `GET` or `DELETE` actions are idempotent by nature.
+
+### Speeding up onboarding
+Consider the following scenario:
+
+> Split is integrated in your application to handle payments.
+> A customer would like to use Split but does not yet have Split account.
+> You already have some information about this customer.
+
+Given the above, in a standard implementation where a customer enables/uses Split within your application, these are they steps they would follow:
+
+1. Click on some sort of button within your app to use Split.
+2. They get redirected to the Split sign in page (possibly via a popup or modal).
+3. Since they don't yet have a Split account, they would click on sign up.
+4. They would fill in all their signup details and submit.
+5. They would be presented with the [authorisation page](http://docs.split.apiary.io/#introduction/get-started/4.-exchange-authorisation-code-for-access-token).
+6. They would click the "Authorise" button and be redirected to your app.
+
+**Whilst not too bad, we can do better**
+
+In order to speed up the process, we allow query string params to be appended to the [authorisation URL](http://docs.split.apiary.io/#introduction/get-started/3.-obtain-authorisation-code).
+For instance, if we already have some information about the customer and know they probably don't have a Split account, we can embed this information in the authorisation URL.
+
+**Supported query string parameters (optional)**
+
+| Parameter | Description |
+|-----------|--------|-------------|
+| `landing`   | Possible values: `business_sign_up` or `personal_sign_up`. What page the user should see first if not already signed in. Default is the sign in page. |
+| `nickname` | Only letters, numbers, dashes and underscores are permitted. This will be used to identify the account in Split. |
+| `name` | Business account only. Business name. |
+| `phone` | Business account only. Business phone number. |
+| `street_address` | |
+| `suburb` | |
+| `state` | See the sign up page for accepted values |
+| `post_code` | |
+| `first_name` | |
+| `last_name` | |
+| `mobile_phone` | |
+| `email` | |
+
+All values should be [URL encoded](https://en.wikipedia.org/wiki/Query_string#URL_encoding).
+
+As an example, the following authorisation URL would display the **personal sign up** & prefill the first name field with **George**:
+
+`https://go-sandbox.split.cash/oauth/authorize?response_type=code&client_id=xxx&redirect_uri=xxx&scope=xxx&landing=personal_sign_up&first_name=George`
+
+### Webhooks
+
+We support two main categories of webhooks:
+
+* **Owner**: These webhooks are managed by the owner of the Split account and only report on events owned by the Split account.
+* **App**: These webhooks are managed by the Split OAuth2 application owner and will report on events relating to any authorised Split account (limited by scope).
+
+All events posted to the designated URL fit the following structure:
+
+```
+{
+  "event": {
+    "type": "object.action",
+    "at": "yyyy-mm-ddThh:mm:ssZ",
+    "who": {
+      "account_id": "x",
+      "bank_account_id": "x"
+    }
+  },
+  "data": [
+    {
+      // The data section will follow the same type of structure
+      // as the event type it is representing. For example, if the
+      // event type was "debit.scheduled", the data representation
+      // structure would be that of a debit object. Too see what a
+      // debit object structure looks like, see the Transactions
+      // section.
+    }
+  ]
+}
+```
+    
+**Note**: The sandbox environment allow both HTTP and HTTPS webhook URLs. The live environment however will only POST to HTTPS URLs.
 
 ## Glossary
 
 | Term          | Description |
 |---------------|-------------|
-| **Split account** | In Split, transactions are conducted between accounts. Split currently supports `business` accounts with planned support for `personal` accounts in the near future. |
+| **Split account** | In Split, transactions are conducted between accounts. Split currently supports `business` and `personal` accounts. |
 | **Split user**    | An authorised representative of a Split account |
 | **Maturation date** | Every payment has a maturation date. This date tells us when we can process your payment. E.g. by default, we will wait 3 days from the day you created the payment before we debit your account in order to give you time to settle the funds in your account. The maturation date can be controlled when you create a new payment. |
 
-
 # Group Agreements
 
-> **NOTE**: This is an experimental feature that has not yet been released. Please contact us at [info@splitpayments.com.au](mailto:info@splitpayments.com.au) to get early access.
-
-Split Agreements are managed on a per contact basis and allow two Split accounts to agree on terms in order to automate the [Payment on Request (PoR)](#reference/payments-on-request) approval process.
+Split Agreements are managed on a per contact basis and allow two Split accounts to agree on terms in order to automate the [Payment Requests (PR)](#reference/payment-requests) approval process.
 
 **Example**
 
-*AgileSupplier frequently sends PoRs to SuperSeller. AgileSupplier would like the PoRs to SuperSeller under $500 to be automatically approved.*
+*AgileSupplier frequently sends PRs to SuperSeller. AgileSupplier would like the PRs to SuperSeller under $500 to be automatically approved.*
 
-*AgileSupplier sends an agreement request to SuperSeller containing the terms. SuperSeller approves the agreement request and all future PoRs from AgileSupplier under
+*AgileSupplier proposes an agreement to SuperSeller containing the terms. SuperSeller accepts the proposed agreement and all future PRs from AgileSupplier under
 $500 are automatically approved.*
 
 ## Types
-Each agreement is unidirectional. In other words, an agreement is required for each PoR direction.
+Each agreement is unidirectional. In other words, an agreement is required for each PR direction.
 
 In order to identify the agreements, there are two types:
 
@@ -223,14 +432,190 @@ In order to identify the agreements, there are two types:
 
 **Example**
 
-*Split Account A (SAA) would like all the PoRs they send to Split Account B (SAB) up to $500 to be automatically approved. SAA therefore sends SBB an agreement request.*
+*Split Account A (SAA) would like all the PRs they send to Split Account B (SAB) up to $500 to be automatically approved. SAA therefore proposes an agreement to SBB.*
 
-*SAB would also like all the PoRs they sends to SAA up to $500 to be automatically approved. SAB therefore sends SAA and agreement request.*
+*SAB would also like all the PRs they sends to SAA up to $500 to be automatically approved. SAB therefore proposes their own agreeement to SAA.*
 
-## List or request agreement [/agreements{?page}]
+## Propose an agreement [/agreements]
 **Endpoint:** `/agreements`
 
-### List all agreements | GET [GET]
+### Propose | POST [POST]
+    
++ Attributes
+    + authoriser_id: `8df89c16-330f-462b-8891-808d7bdceb7f` (string, required) - The contact's account ID (`Contact.account.id`)
+    + terms
+        + per_payout
+            + min_amount: 0 (number, required) - Minimum amount in cents a PR can be in order to be auto-approved
+            + max_amount: 10000 (number, required) - Maximum amount in cents a PR can be in order to be auto-approved
+        + per_frequency
+            + days: 7 (number, required) - Amount of days to apply against the frequency
+            + max_amount: 1000000 (number, required) - Maximum amount in cents the total of all PRs can be for the duration of the frequency
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+
++ Response 201 (application/json)
+
+        {
+          "data": {
+            "ref": "A.2",
+            "initiator_id": "4e2728cc-b4ba-42c2-a6c3-26a7758de58d",
+            "authoriser_id": "8df89c16-330f-462b-8891-808d7bdceb7f",
+            "status": "proposed",
+            "responded_at": null,
+            "created_at": "2017-03-20T00:53:27Z",
+            "terms": {
+              "per_payout": {
+                "max_amount": 10000,
+                "min_amount": 1
+              },
+              "per_frequency": {
+                "days": 7,
+                "max_amount": 1000000
+              }
+            }
+          }
+        }
+
+## Accept a proposed agreement [/agreements/{ref}/accept]
+**Endpoint:** `/agreements/{ref}/accept`
+
+### Approve | POST [POST]
+
++ Parameters
+    + ref: `A.2` (string, required) - Agreement reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+            
++ Response 200 (application/json)
+
+        {
+          "data": {
+            "ref": "A.2",
+            "initiator_id": "4e2728cc-b4ba-42c2-a6c3-26a7758de58d",
+            "authoriser_id": "8df89c16-330f-462b-8891-808d7bdceb7f",
+            "status": "accepted",
+            "responded_at": "2017-03-20T02:13:11Z",
+            "created_at": "2017-03-20T00:53:27Z",
+            "terms": {
+              "per_payout": {
+                "max_amount": 10000,
+                "min_amount": 1
+              },
+              "per_frequency": {
+                "days": 7,
+                "max_amount": 1000000
+              }
+            }
+          }
+        }
+
+## Decline a proposed agreement [/agreements/{ref}/decline]
+**Endpoint:** `/agreements/{ref}/decline`
+
+### Decline | POST [POST]
+
++ Parameters
+    + ref: `A.2` (string, required) - Agreement reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+            
++ Response 200 (application/json)
+
+        {
+          "data": {
+            "ref": "A.2",
+            "initiator_id": "4e2728cc-b4ba-42c2-a6c3-26a7758de58d",
+            "authoriser_id": "8df89c16-330f-462b-8891-808d7bdceb7f",
+            "status": "declined",
+            "responded_at": "2017-03-20T02:13:11Z",
+            "created_at": "2017-03-20T00:53:27Z",
+            "terms": {
+              "per_payout": {
+                "max_amount": 10000,
+                "min_amount": 1
+              },
+              "per_frequency": {
+                "days": 7,
+                "max_amount": 1000000
+              }
+            }
+          }
+        }
+
+## Get or cancel an agreement [/agreements/{ref}]
+**Endpoint:** `/agreements/{ref}`
+
+### Get an agreement | GET [GET]
+
++ Parameters
+    + ref: `A.2` (string, required) - Agreement reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 200 (application/json)
+    
+        {
+          "data": {
+            "ref": "A.2",
+            "initiator_id": "4e2728cc-b4ba-42c2-a6c3-26a7758de58d",
+            "authoriser_id": "8df89c16-330f-462b-8891-808d7bdceb7f",
+            "status": "approved",
+            "responded_at": "2017-03-20T02:13:11Z",
+            "created_at": "2017-03-20T00:53:27Z",
+            "terms": {
+              "per_payout": {
+                "max_amount": 10000,
+                "min_amount": 1
+              },
+              "per_frequency": {
+                "days": 7,
+                "max_amount": 1000000
+              }
+            }
+          }
+        }
+
+### Cancel an agreement | DELETE [DELETE]
+An agreement can be cancelled by the initiator at any time whilst the authoriser (agreement recipient) can only cancel a previously accepted agreement.
+
++ Parameters
+    + ref: `A.2` - Agreement request reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 204 (application/json)
+
+## Incoming agreements [/agreements/incoming{?page}]
+**Endpoint:** `/agreements/incoming{?page}`
+
+### List incoming agreements | GET [GET]
+
+By default, all incoming agreements will be returned. You can apply filters to your query to customise the returned agreements.
+
+| Filter | Description | Usage |
+|--------|-------------|---------|
+| `initiator_id` | Single value, exact match | `?initiator_id=a0ce6a69-6729-4cfd-ac8f-0e3d753c4017` |
+| `status` | Multiple values, exact match | `?status=proposed,accepted` |
 
 + Parameters
     + page: 1 (optional) - page of results to return
@@ -245,189 +630,149 @@ In order to identify the agreements, there are two types:
 
     + Headers
 
-            Link: <http:/api-sandbox.spli.cash/agreements?page=2>; rel="next", <http:/api-sandbox.split.cash/agreements?page=8>; rel="last"
+            Link: <http:/api-sandbox.spli.cash/agreements/incoming?page=2>; rel="next", <http:/api-sandbox.split.cash/agreements/incoming?page=8>; rel="last"
 
     + Body
     
-            [
+            {
+              "data": [
                 {
-                    "id": "b7cb7f5d-a699-49b0-b895-97fb6b8ce191",
-                    "account_nickname": "oustanding_tours",
-                    "contact_id": null
-                    "type": "incoming",
-                    "status": "pending_approval",
-                    "terms": {
-                        "per_payment": {
-                            "min": 0,
-                            "max": 50000
-                        }
-                    }
-                },
-                {
-                    "id": "7af3973b-f958-4b35-b2a6-1e54d2e8492e",
-                    "account_nickname": "big_trucks",
-                    "contact_id": "81a80df3-10aa-416f-a10a-77f4cd4a6c4d"
-                    "type": "outgoing",
-                    "status": "approved",
-                    "terms": {
-                        "per_payment": {
-                            "min": 0,
-                            "max": 50000
-                        }
-                    }
-                },
-                {
-                    "id": "7af3973b-f958-4b35-b2a6-1e54d2e8492e",
-                    "account_nickname": "big_trucks",
-                    "contact_id": "81a80df3-10aa-416f-a10a-77f4cd4a6c4d"
-                    "type": "incoming",
-                    "status": "approved",
-                    "terms": {
-                        "per_payment": {
-                            "min": 0,
-                            "max": 50000
-                        }
+                  "ref": "A.2",
+                  "initiator_id": "4e2728cc-b4ba-42c2-a6c3-26a7758de58d",
+                  "authoriser_id": "8df89c16-330f-462b-8891-808d7bdceb7f",
+                  "status": "proposed",
+                  "responded_at": null,
+                  "created_at": "2017-03-20T00:53:27Z",
+                  "terms": {
+                    "per_payout": {
+                      "max_amount": 10000,
+                      "min_amount": 1
                     },
+                    "per_frequency": {
+                      "days": 7,
+                      "max_amount": 1000000
+                    }
+                  }
                 },
                 {
-                    "id": "631277f2-93f8-4ec3-b83e-66ef366f3d3f",
-                    "account_nickname": "crystal_lampers",
-                    "contact_id": "c25f8705-754b-4ac6-b3e6-d8647a4a340b"
-                    "type": "outgoing",
-                    "status": "declined",
-                    "terms": {
-                        "per_payment": {
-                            "min": 0,
-                            "max": 980000
-                        }
+                  "ref": "A.1",
+                  "initiator_id": "4e2728cc-b4ba-42c2-a6c3-26a7758de58d",
+                  "authoriser_id": "56df206a-aaff-471a-b075-11882bc8906a",
+                  "status": "proposed",
+                  "responded_at": null,
+                  "created_at": "2017-03-16T22:51:48Z",
+                  "terms": {
+                    "per_payout": {
+                      "max_amount": 5000,
+                      "min_amount": 0
+                    },
+                    "per_frequency": {
+                      "days": "1",
+                      "max_amount": 10000
                     }
+                  }
                 }
-            ]
-
-### Send an agreement request | POST [POST]
-    
-+ Attributes
-    + contact_id: `48b89364-1577-4c81-ba02-96705895d457` (string, required) - The ID of the recipient payment
-    + terms
-        + per_payment
-            + min: 0 (number, required) - Minimum amount in cents a PoR must be in order to be auto-approved
-            + max: 50000 (number, required) - Maximum amount in cents a PoR must be in order to be auto-approved
-
-+ Request (application/json)
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-
-+ Response 201 (application/json)
-
-        {
-            "id": "b7cb7f5d-a699-49b0-b895-97fb6b8ce191",
-            "account_nickname": "oustanding_tours",
-            "contact_id": "48b89364-1577-4c81-ba02-96705895d457"
-            "type": "outgoing",
-            "status": "pending_approval",
-            "terms": {
-                "per_payment": {
-                    "min": 0,
-                    "max": 50000
-                }
+              ]
             }
-        }
 
+## Outgoing agreements [/agreements/outgoing{?page}]
+**Endpoint:** `/agreements/outgoing{?page}`
 
-## Manage agreements [/agreements/{id}]
-**Endpoint:** `/agreements/{id}`
+### List outgoing agreements | GET [GET]
 
-> **Note:** Approving an agreement request will automatically add the Split account to your contact list should it not already be there.
+By default, all outgoing agreements will be returned. You can apply filters to your query to customise the returned agreements.
 
-### Approve or decline an agreement request | PATCH [PATCH]
+| Filter | Description | Usage |
+|--------|-------------|---------|
+| `authoriser_id` | Single value, exact match | `?authoriser_id=a0ce6a69-6729-4cfd-ac8f-0e3d753c4017` |
+| `status` | Multiple values, exact match | `?status=proposed,accepted` |
 
 + Parameters
-    + id: `7af3973b-f958-4b35-b2a6-1e54d2e8492e` (required) - agreement ID
-
-+ Attributes
-    + status: `approve` (string, required) - Possible values: `approve`, `decline`
-
-+ Request (application/json)
-
-    + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-            
-+ Response 200 (application/json)
-
-        {
-            "id": "7af3973b-f958-4b35-b2a6-1e54d2e8492e",
-            "account_nickname": "big_trucks",
-            "contact_id": "81a80df3-10aa-416f-a10a-77f4cd4a6c4d"
-            "type": "incoming",
-            "status": "approved",
-            "terms": {
-                "per_payment": {
-                    "min": 0,
-                    "max": 50000
-                }
-            }
-        }
-
-### Retrieve an agreement | GET [GET]
-
-+ Parameters
-    + id: `7af3973b-f958-4b35-b2a6-1e54d2e8492e` (required) - agreement ID
+    + page: 1 (optional) - page of results to return
     
 + Request
 
     + Headers
     
             Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
-
+    
 + Response 200 (application/json)
 
-        {
-            "id": "7af3973b-f958-4b35-b2a6-1e54d2e8492e",
-            "account_nickname": "big_trucks",
-            "contact_id": "81a80df3-10aa-416f-a10a-77f4cd4a6c4d"
-            "type": "incoming",
-            "status": "approved",
-            "terms": {
-                "per_payment": {
-                    "min": 0,
-                    "max": 50000
-                }
-            }
-        }
-        
-
-            
-### Cancel an agreement | DELETE [DELETE]
-Only outgoing agreements (agreements initated by the authenticated account) can be cancelled.
-
-+ Parameters
-    + id: `7af3973b-f958-4b35-b2a6-1e54d2e8492e` (required) - agreement ID
-
-+ Request
-
     + Headers
-    
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
 
-+ Response 204
+            Link: <http:/api-sandbox.spli.cash/agreements/outgoing?page=2>; rel="next", <http:/api-sandbox.split.cash/agreements/outgoing?page=8>; rel="last"
+
+    + Body
+    
+            {
+              "data": [
+                {
+                  "ref": "A.4",
+                  "initiator_id": "4e2728cc-b4ba-42c2-a6c3-26a7758de58d",
+                  "authoriser_id": "8df89c16-330f-462b-8891-808d7bdceb7f",
+                  "status": "proposed",
+                  "responded_at": null,
+                  "created_at": "2017-03-20T00:53:27Z",
+                  "terms": {
+                    "per_payout": {
+                      "max_amount": 10000,
+                      "min_amount": 1
+                    },
+                    "per_frequency": {
+                      "days": 7,
+                      "max_amount": 1000000
+                    }
+                  }
+                },
+                {
+                  "ref": "A.3",
+                  "initiator_id": "4e2728cc-b4ba-42c2-a6c3-26a7758de58d",
+                  "authoriser_id": "56df206a-aaff-471a-b075-11882bc8906a",
+                  "status": "proposed",
+                  "responded_at": null,
+                  "created_at": "2017-03-16T22:51:48Z",
+                  "terms": {
+                    "per_payout": {
+                      "max_amount": 5000,
+                      "min_amount": 0
+                    },
+                    "per_frequency": {
+                      "days": "1",
+                      "max_amount": 10000
+                    }
+                  }
+                }
+              ]
+            }
 
 # Group Contacts
-Your contacts form an address book of Split accounts with whom you can interact. In order to create a [Payment](#reference/payments) or
-a [Payment on Request](#reference/payments-on-request) you must first have the recipient Split account as part of your contacts.
+Your contacts form an address book of Split accounts and Anyone accounts with whom you can interact. In order to create [Payments](#reference/payments), [Payment Requests](#reference/payments-requests)
+or [Agreements](#reference/agreements) you must first have the party in your contacts.
 
-## Add or list contacts [/contacts{?page}]
+> **Note:** There are a few IDs supplied within a Contact's response:
+> 
+> 1. `data.id` represents the contact resource and used with `GET contacts/:id`, `PATCH contacts/:id` and `DELETE contacts/:id`.
+> 2. `data.bank_account.id` represents the contact's bank account and is used when creating [Payments](#reference/payments) or [Payment Requests](#reference/payments-requests).
+> 3. `data.account.id` represents the contact's Split account and is used when proposing [Agreements](#reference/agreements).
+
+The `state` attribute corresponds to the contact's bank account and can have the following values:
+
+| Value | Description |
+|-------|-------------|
+| `disabled` | There is no valid bank account (transactions are not possible) |
+| `pending_verification` | The bank account is not verified (payments are possible but payment requests will be on hold until the verification is complete) |
+| `verified` | The bank account has been verified (all transactions are possible) |
+
+## Add Split contact or list contacts [/contacts{?page}]
 **Endpoint:** `/contacts{?page}`
 
-### Add a contact | POST [POST]
+### Add a Split contact | POST [POST]
 
 + Request (application/json)
 
     + Headers
     
-            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+            Authorization: Bearer 147a57a47cc2o21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
 
     + Body
     
@@ -440,21 +785,42 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
 
         {
           "data": {
-            "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
-            "account_number": "947434694",
-            "branch_code": "304304",
-            "state": "active",
-            "business": {
+            "id": "6a7ed958-f1e8-42dc-8c02-3901d7057357",
+            "name": "Oustanding Tours Pty Ltd",
+            "email": null,
+            "type": "Split account",
+            "bank_account": {
+              "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
+              "account_number": "947434694",
+              "branch_code": "304304",
+              "state": "verified",
+            },
+            "account": {
+              "id": "77be6ecc-5fa7-454b-86d6-02a5f147878d",
               "nickname": "outstanding_tours",
               "abn": "123456789",
               "name": "Outstanding Tours Pty Ltd"
             }
-          }dickens-brothers-3
+          }
         }
 
 + Response 404
 
 ### List all contacts | GET [GET]
+
+By default, all contacts will be returned. You can apply filters to your query to customise the returned contact list.
+
+* You may use a combination of filters in a query
+* Use the ampersand (`&`) to add additional filters
+
+| Filter | Description | Usage |
+|--------|-------------|---------|
+| `name` | Single value, string search | `?name=Some%20name` |
+| `nickname` | Single value, string search | `?nickname=some_nickname` |
+| `bank_account_id` | Single value, exact match | `?bank_account_id=1fec2e4b-88e9-4b71-88ab-dd94d7ea6aa7` |
+| `bank_account_branch_code` | Single value, exact match | `?bank_account_branch_code=123456` |
+| `bank_account_account_number` | Single value, exact match | `?bank_account_account_number=123456789` |
+
 
 + Parameters
     + page: 1 (optional) - page of results to return
@@ -476,48 +842,129 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
             {
               "data": [
                 {
-                  "id": "095c5ab7-7fa8-40fd-b317-cddbbf4c8fbc",
-                  "account_number": "494307",
-                  "branch_code": "435434",
-                  "state": "active",
-                  "business": {
+                  "id": "6a7ed958-f1e8-42dc-8c02-3901d7057357",
+                  "name": "Oustanding Tours Pty Ltd",
+                  "email": null,
+                  "type": "Split account",
+                  "bank_account": {
+                    "id": "095c5ab7-7fa8-40fd-b317-cddbbf4c8fbc",
+                    "account_number": "494307",
+                    "branch_code": "435434",
+                    "state": "verified",
+                  },
+                  "account": {
+                    "id": "77be6ecc-5fa7-454b-86d6-02a5f147878d",
                     "nickname": "outstanding_tours",
                     "abn": "123456789",
                     "name": "Oustanding Tours Pty Ltd"
                   }
                 },
-                {   
-                  "id": "861ff8e4-7acf-4897-9e53-e7c5ae5f7cc0",
-                  "account_number": "4395959",
-                  "branch_code": "068231",
-                  "state": "active",
-                  "business": {
+                {
+                  "id": "49935c67-c5df-4f00-99f4-1413c18a89a0",
+                  "name": "Adventure Dudes Pty Ltd",
+                  "email": null,
+                  "type": "Split account",
+                  "bank_account": {
+                    "id": "861ff8e4-7acf-4897-9e53-e7c5ae5f7cc0",
+                    "account_number": "4395959",
+                    "branch_code": "068231",
+                    "state": "verified",
+                  },
+                  "account": {
+                    "id": "362f7fe8-4af2-4902-b3d7-b5ab704ef2e7",
                     "nickname": "adventure_dudes",
                     "abn": "126754389",
                     "name": "Adventure Dudes Pty Ltd"
                   }
                 },
                 {
-                  "id": "3156e4e6-688e-4f95-a591-f1a4fb3b768a",
-                  "account_number": "493584",
-                  "branch_code": "022434",
-                  "state": "suspended",
-                  "business": {
+                  "id": "eb3266f9-e172-4b6c-b802-fe5ac4d3250a",
+                  "name": "Surfing World Pty Ltd",
+                  "email": null,
+                  "type": "Split account",
+                  "bank_account": {
+                      "id": "N/A",
+                      "account_number": "N/A",
+                      "branch_code": "N/A",
+                      "state": "disabled",
+                  },
+                  "account": {
+                    "id": "a31dc907-9c7a-4736-84c9-1149cf03de42",
                     "nickname": "surfing_world",
                     "abn": "295443789",
                     "name": "Surfing World Pty Ltd"
                   }
+                },
+                {
+                  "id": "6a7ed958-f1e8-42dc-8c02-3901d7057357",
+                  "name": "Hunter Thompson",
+                  "email": "hunter@batcountry.com",
+                  "type": "anyone",
+                  "bank_account": {
+                    "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
+                    "account_number": "123456789",
+                    "branch_code": "123456",
+                    "state": "pending_verification",
+                  },
+                  "anyone_account": {
+                    "id": "77be6ecc-5fa7-454b-86d6-02a5f147878d"
+                  }
                 }
               ]
             }
+
+## Add an Anyone contact [/contacts/new/anyone]
+**Endpoint:** `/contacts/new/anyone`
+
+When you want to pay somebody that doesn't have a Split account, you can add them as an Anyone contact.
+
+**Note**: Anyone contacts can currently only be used as payout recipients in a Payment.
+
+### Add an Anyone contact | POST [POST]
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2o21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+
+    + Body
+    
+            {
+              "name": "Hunter Thompson",
+              "email": "hunter@batcountry.com",
+              "branch_code": "123456",
+              "account_number": "123456789"
+            }
+
+
++ Response 201 (application/json)
+
+        {
+          "data": {
+            "id": "6a7ed958-f1e8-42dc-8c02-3901d7057357",
+            "name": "Hunter Thompson",
+            "email": "hunter@batcountry.com",
+            "type": "anyone",
+            "bank_account": {
+              "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
+              "account_number": "123456789",
+              "branch_code": "123456",
+              "state": "pending_verification",
+            },
+            "anyone_account": {
+              "id": "77be6ecc-5fa7-454b-86d6-02a5f147878d"
+            }
+          }
+        }
         
-## Get or remove a contact [/contacts/{nickname}]
-**Endpoint:** `/contacts/{nickname}`
+## Get, update or remove a contact [/contacts/{id}]
+**Endpoint:** `/contacts/{id}`
 
 ### Get a contact | GET [GET]
 
 + Parameters
-    + nickname: `outstanding_tours` - Contact's account nickname
+    + id: `55afddde-4296-4daf-8e49-7ba481ef9608` - Contact ID
     
 + Request
     
@@ -529,11 +976,18 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
 
         {
           "data": {
-            "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
-            "account_number": "947434694",
-            "branch_code": "304304",
-            "state": "active",
-            "business": {
+            "id": "fcabeacb-2ef6-4b27-ba19-4f6fa0d57dcb",
+            "name": "Oustanding Tours Pty Ltd",
+            "email": null,
+            "type": "Split account",
+            "bank_account": {
+              "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
+              "account_number": "947434694",
+              "branch_code": "304304",
+              "state": "pending_verification",
+            },
+            "account": {
+              "id": "77be6ecc-5fa7-454b-86d6-02a5f147878d",
               "nickname": "outstanding_tours",
               "abn": "123456789",
               "name": "Outstanding Tours Pty Ltd"
@@ -543,17 +997,58 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
 
 + Response 404 (application/json)
 
+### Update a contact | PATCH [PATCH]
+You can update the name of any contact. This is essentially an alias you can use to provide something contextually meaninful.
+
+**Note**: Any previous transactions to that contact will retain the contact name that was current at the time.
+
++ Parameters
+    + id: `55afddde-4296-4daf-8e49-7ba481ef9608` - Contact ID
+    
++ Request(application/json)
+    
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+
+    + Body
+    
+            {
+                "name": "My very own alias"
+            }
+
+    
++ Response 200 (application/json)
+
         {
-            "errors": [
-                "Cannot find requested Split account"
-            ]
+          "data": {
+            "id": "fcabeacb-2ef6-4b27-ba19-4f6fa0d57dcb",
+            "name": "My very own alias",
+            "email": null,
+            "type": "Split account",
+            "bank_account": {
+              "id": "55afddde-4296-4daf-8e49-7ba481ef9608",
+              "account_number": "947434694",
+              "branch_code": "304304",
+              "state": "pending_verification",
+            },
+            "account": {
+              "id": "77be6ecc-5fa7-454b-86d6-02a5f147878d",
+              "nickname": "outstanding_tours",
+              "abn": "123456789",
+              "name": "Outstanding Tours Pty Ltd"
+            }
+          }
         }
 
++ Response 404 (application/json)
 
 ### Remove a contact | DELETE [DELETE]
 
+**Note**: Removing a contact will not affect your transaction history.
+
 + Parameters
-    + nickname: `outstanding_tours` - Contact's account nickname
+    + id: `55afddde-4296-4daf-8e49-7ba481ef9608` - Contact ID
     
 + Request
 
@@ -585,16 +1080,24 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
 
 + Attributes
     + description: The SuperPackage (string, required) - User description. Only visible to the payer
-    + matures_at: 2016-09-13T00:00:00Z (string, required) - Date & time in UTC ISO8601 the payment should be processed
+    + matures_at: `2016-09-13T00:00:00Z` (string, required) - Date & time in UTC ISO8601 the payment should be processed
     + payouts (array, required) - One or many contact to pay (2 recipients in this example)
         + (object)
             + amount: 30000 (number, required) - Amount in cents to pay the recipient
             + description: `A tandem skydive jump SB23094` (string, required) - Description that both the payer an recipient can see
-            + recipient_id: `48b89364-1577-4c81-ba02-96705895d457` (string, required) - Contact to pay
+            + recipient_id: `48b89364-1577-4c81-ba02-96705895d457` (string, required) - Contact to pay (`Contact.id`)
+            + metadata (object, optional) - Optional object to allow custom and configuration values
+                + invoice_ref: `BILL-0001` (string, optional) - Optional AP invoice (bill) reference. Used by Split when an accounting integration is enabled
+                + invoice_id: `c80a9958-e805-47c0-ac2a-c947d7fd778d` (string, optional) - Optional AP invoice (bill) ID. Used by Split when an accounting integration is enabled
+                + custom_key: Custom string (string, optional)
+                + `another_custom_key`: Maybe a URL (string, optional)
         + (object)
             + amount: 30000 (number, required) - Amount in cents to pay the recipient
             + description: `A scuba dive SDS5464` (string, required) - Description that both the payer an recipient can see
-            + recipient_id: `dc6f1e60-3803-43ca-a200-7d641816f57f` (string, required) - Contact to pay
+            + recipient_id: `dc6f1e60-3803-43ca-a200-7d641816f57f` (string, required) - Contact to pay (`Contact.id`)
+    + metadata (object, optional) - Optional object to allow custom and configuration values
+        + custom_key: Custom string (string, optional)
+        + `another_custom_key`: Maybe a URL (string, optional)
             
 
 + Request (application/json)
@@ -611,25 +1114,39 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
             "payouts": [
               {
                 "ref": "D.1",
+                "invoice_ref": "BILL-0001",
                 "batch_description": "The SuperPackage",
-                "matures_on": "2016-09-13T23:50:44Z",
+                "matures_at": "2016-09-13T23:50:44Z",
                 "created_at": "2016-09-10T23:50:44Z",
+                "status": "maturing",
                 "amount": 30000,
                 "description": "A tandem skydive jump SB23094",
                 "from_id": "83623359-e86e-440c-9780-432a3bc3626f",
-                "to_id": "48b89364-1577-4c81-ba02-96705895d457"
+                "to_id": "48b89364-1577-4c81-ba02-96705895d457",
+                "metadata": {
+                  "invoice_ref": "BILL-0001",
+                  "invoice_id": "c80a9958-e805-47c0-ac2a-c947d7fd778d",
+                  "custom_key": "Custom string",
+                  "another_custom_key": "Maybe a URL"
+                }
               },
               {
                 "ref": "D.2",
+                "invoice_ref": null,
                 "batch_description": "The SuperPackage",
-                "matures_on": "2016-09-13T23:50:44Z",
+                "matures_at": "2016-09-13T23:50:44Z",
                 "created_at": "2016-09-10T23:50:44Z",
+                "status": "maturing",
                 "amount": 30000,
                 "description": "A scuba dive SDS5464",
                 "from_id": "48b89364-1577-4c81-ba02-96705895d457",
                 "to_id": "dc6f1e60-3803-43ca-a200-7d641816f57f"
               }
-            ]
+            ],
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
+            }
           }
         }
 
@@ -658,30 +1175,44 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
                   "payouts": [
                     {
                       "ref": "D.1",
+                      "invoice_ref": null,
                       "batch_description": "This description is only available to the payer",
-                      "matures_on": "2016-09-13T23:50:44Z",
+                      "matures_at": "2016-09-13T23:50:44Z",
                       "created_at": "2016-09-10T23:50:44Z",
+                      "status": "maturing",
                       "amount": 30000,
                       "description": "The recipient will see this description",
                       "from_id": "83623359-e86e-440c-9780-432a3bc3626f",
-                      "to_id": "48b89364-1577-4c81-ba02-96705895d457"
+                      "to_id": "48b89364-1577-4c81-ba02-96705895d457",
+                      "metadata": {
+                        "invoice_ref": "BILL-0001",
+                        "invoice_id": "c80a9958-e805-47c0-ac2a-c947d7fd778d",
+                        "custom_key": "Custom string",
+                        "another_custom_key": "Maybe a URL"
+                      }
                     },
                     {
-                      "ref": "P.2",
+                      "ref": "D.2",
+                      "invoice_ref": null,
                       "batch_description": "This description is only available to the payer",
-                      "matures_on": "2016-09-13T23:50:44Z",
+                      "matures_at": "2016-09-13T23:50:44Z",
                       "created_at": "2016-09-10T23:50:44Z",
+                      "status": "maturing",
                       "amount": 30000,
                       "description": "The recipient will see this description",
                       "from_id": "48b89364-1577-4c81-ba02-96705895d457",
                       "to_id": "dc6f1e60-3803-43ca-a200-7d641816f57f"
                     }
-                  ]
+                  ],
+                  "metadata": {
+                    "custom_key": "Custom string",
+                    "another_custom_key": "Maybe a URL"
+                  }
                 }
               ]
             }
 
-## Get or void a payment [/payments/{ref}]
+## Get a payment [/payments/{ref}]
 **Endpoint:** `/payments/{ref}`
 
 ### Get a payment | GET [GET]
@@ -703,32 +1234,52 @@ a [Payment on Request](#reference/payments-on-request) you must first have the r
             "payouts": [
               {
                 "ref": "D.1",
+                "invoice_ref": null,
                 "batch_description": "The SuperPackage",
-                "matures_on": "2016-09-13T23:50:44Z",
+                "matures_at": "2016-09-13T23:50:44Z",
                 "created_at": "2016-09-10T23:50:44",
+                "status": "maturing",
                 "amount": 30000,
                 "description": "A tandem skydive jump SB23094",
                 "from_id": "83623359-e86e-440c-9780-432a3bc3626f",
-                "to_id": "48b89364-1577-4c81-ba02-96705895d457"
+                "to_id": "48b89364-1577-4c81-ba02-96705895d457",
+                "metadata": {
+                  "invoice_ref": "BILL-0001",
+                  "invoice_id": "c80a9958-e805-47c0-ac2a-c947d7fd778d",
+                  "custom_key": "Custom string",
+                  "another_custom_key": "Maybe a URL"
+                }
               },
               {
                 "ref": "D.2",
+                "invoice_ref": null,
                 "batch_description": "The SuperPackage",
-                "matures_on": "2016-09-13T23:50:44Z",
+                "matures_at": "2016-09-13T23:50:44Z",
                 "created_at": "2016-09-10T23:50:44Z",
+                "status": "maturing",
                 "amount": 30000,
                 "description": "A scuba dive SDS5464",
                 "from_id": "48b89364-1577-4c81-ba02-96705895d457",
                 "to_id": "dc6f1e60-3803-43ca-a200-7d641816f57f"
               }
-            ]
+            ],
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
+            }
           }
         }
 
-### Void a payment | DELETE [DELETE]
+# Group Payouts
+Each Payment has one or multiple Payouts. Payouts can be voided individually as part of the larger payment.
+
+## Void a payout [/payouts/{ref}]
+**Endpoint:** `/payouts/{ref}`
+
+### Void a payout | DELETE [DELETE]
 
 + Parameters
-    + ref: `PB.1` - Payment reference
+    + ref: `D.1` - Payout reference
     
 + Request
 
@@ -779,16 +1330,26 @@ A PR can have the following states:
 | `declined` | The payer has declined the payment request. |
 | `cancelled` | The initiator has cancelled the payment request. |
 
+There are two response fields that differ depending on the request:
+
+| Field | Description |
+|-------|-------------|
+| `debit_ref` | Only visible to the payment request authoriser (incoming payment requests). This reference corresponds to the newly created debit to process the approved payment request. |
+| `credit_ref` | Only visisble to the payment request initiator (outgoing payment requests). This reference corresponds to the newly created credit from the approved payment request. |
+
 ## Request a payment [/payment_requests]
 **Endpoint:** `/payment_requests`
 
-### Make a payment on request | POST [POST]
+### Make a payment request | POST [POST]
 
 + Attributes
-    + authoriser_id: `de86472c-c027-4735-a6a7-234366a27fc7` (string, required) - The Split account that will action/pay the PR
-    + description: "Visible to both initiator and authoriser" (string, required) - Description visible to the initiator (payee) & authoriser (payer)
-    + matures_at: "2016-12-19T02:10:56Z" (string, required) - Date & time in UTC ISO8601 that the payment will be processed if the request is approved
+    + authoriser_id: `de86472c-c027-4735-a6a7-234366a27fc7` (string, required) - The Split account that will action/pay the PR (`Contact.bank_account.id`)
+    + description: Visible to both initiator and authoriser (string, required) - Description visible to the initiator (payee) & authoriser (payer)
+    + matures_at: `2016-12-19T02:10:56Z` (string, required) - Date & time in UTC ISO8601 that the payment will be processed if the request is approved
     + amount: 99000 (number, required) - Amount in cents to pay the initiator
+    + metadata (object, optional) - Optional object to allow custom and configuration values
+        + custom_key: Custom string (string, optional)
+        + `another_custom_key`: Maybe a URL (string, optional)
 
 + Request (application/json)
 
@@ -806,17 +1367,21 @@ A PR can have the following states:
             "status": "pending_approval",
             "responded_at": null,
             "created_at": "2016-12-19T02:10:56Z",
-            "debit_ref": null,
+            "credit_ref": null,
             "payout": {
               "amount": 99000,
               "description": "The elite package for 4",
               "matures_at": "2016-12-25T00:00:00Z"
+            },
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
             }
           }
         }
 
 ## Approve a payment request [/payment_requests/{ref}/approve]
-**Endpoint:** `/payment_requests{ref}/approve`
+**Endpoint:** `/payment_requests/{ref}/approve`
 
 ### Approve | POST [POST]
 
@@ -839,11 +1404,15 @@ A PR can have the following states:
             "status": "approved",
             "responded_at": "2016-12-19T02:38:04Z",
             "created_at": "2016-12-19T02:10:56Z",
-            "credit_ref": "C.b",
+            "debit_ref": "D.b",
             "payout": {
               "amount": 99000,
               "description": "The elite package for 4",
               "matures_at": "2016-12-25T00:00:00Z"
+            },
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
             }
           }
         }
@@ -872,11 +1441,15 @@ A PR can have the following states:
             "status": "declined",
             "responded_at": "2016-12-19T02:38:04Z",
             "created_at": "2016-12-19T02:10:56Z",
-            "credit_ref": null,
+            "debit_ref": null,
             "payout": {
               "amount": 99000,
               "description": "The elite package for 4",
               "matures_at": "2016-12-25T00:00:00Z"
+            },
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
             }
           }
         }
@@ -910,12 +1483,16 @@ A PR can have the following states:
               "amount": 99000,
               "description": "The elite package for 4",
               "matures_at": "2016-12-25T00:00:00Z"
+            },
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
             }
           }
         }
 
 ### Cancel a payment request | DELETE [DELETE]
-A PR can only be cancelled if it has not yet been approved.
+A PR can only be cancelled if it has not yet matured.
 
 + Parameters
     + ref: `PR.3` - Payment request reference
@@ -959,7 +1536,7 @@ A PR can only be cancelled if it has not yet been approved.
                   "status": "approved",
                   "responded_at": "2016-12-19T02:10:18Z",
                   "created_at": "2016-12-19T02:09:09Z",
-                  "credit_ref": "C.a",
+                  "debit_ref": "D.a",
                   "payout": {
                     "amount": 30000,
                     "description": "The SuperPackage",
@@ -973,11 +1550,15 @@ A PR can only be cancelled if it has not yet been approved.
                   "status": "pending_approval",
                   "responded_at": null,
                   "created_at": "2016-12-19T02:10:56Z",
-                  "credit_ref": null,
+                  "debit_ref": null,
                   "payout": {
                     "amount": 99000,
                     "description": "The elite package for 4",
                     "matures_at": "2016-12-25T00:00:00Z"
+                  },
+                  "metadata": {
+                    "custom_key": "Custom string",
+                    "another_custom_key": "Maybe a URL"
                   }
                 }
               ]
@@ -1014,7 +1595,7 @@ A PR can only be cancelled if it has not yet been approved.
                   "status": "approved",
                   "responded_at": "2016-12-19T02:10:18Z",
                   "created_at": "2016-12-19T02:09:09Z",
-                  "debit_ref": "D.a",
+                  "credit_ref": "C.a",
                   "payout": {
                     "amount": 30000,
                     "description": "The SuperPackage",
@@ -1028,7 +1609,7 @@ A PR can only be cancelled if it has not yet been approved.
                   "status": "pending_approval",
                   "responded_at": null,
                   "created_at": "2016-12-19T02:10:56Z",
-                  "debit_ref": null,
+                  "credit_ref": null,
                   "payout": {
                     "amount": 99000,
                     "description": "The elite package for 4",
@@ -1038,10 +1619,268 @@ A PR can only be cancelled if it has not yet been approved.
               ]
             }
 
+## Get a payment request's history [/payment_requests/{ref}/history]
+**Endpoint:** `/payment_requests/{ref}/history`
+
+Gives you visibility of the entire payment request lifecycle including the generated debit and credit transactions.
+
+### Get a payment request's history | GET [GET]
+
++ Parameters
+    + ref: `PR.3` (string, required) - Payment request reference
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 200 (application/json)
+    
+        {
+          "data": [
+              {
+                "type": "payout_request",
+                "event": "requested",
+                "at": "2017-01-05T07:47:45Z",
+                "ref": "PR.3",
+                "by": "Fancy Pants (fancy_pants)"
+              },
+              {
+                "type": "payout_request",
+                "event": "approved",
+                "at": "2017-01-07T06:13:52Z",
+                "ref": "PR.3",
+                "by": "Lycra Co (lycra_co)"
+              },
+              {
+                "type": "debit",
+                "event": "scheduled",
+                "at": "2017-01-07T06:13:52Z",
+                "ref": "D.n",
+                "by": "Split Payments"
+              },
+              {
+                "type": "credit",
+                "event": "scheduled",
+                "at": "2017-01-07T06:13:52Z",
+                "ref": "C.e",
+                "by": "Split Payments"
+              },
+              {
+                "type": "debit",
+                "event": "matured",
+                "at": "2017-01-08T04:30:14Z",
+                "ref": "D.n",
+                "by": "Split Payments"
+              },
+              {
+                "type": "debit",
+                "event": "processing",
+                "at": "2017-01-08T04:30:14Z",
+                "ref": "D.n",
+                "by": "Split Payments"
+              },
+              {
+                "type": "debit",
+                "event": "clearing",
+                "at": "2017-01-08T19:02:20Z",
+                "ref": "D.n",
+                "by": "Split Payments"
+              },
+              {
+                "type": "debit",
+                "event": "cleared",
+                "at": "2017-01-11T19:07:52Z",
+                "ref": "D.n",
+                "by": "Split Payments"
+              },
+              {
+                "type": "credit",
+                "event": "matured",
+                "at": "2017-01-11T19:07:52Z",
+                "ref": "C.e",
+                "by": "Split Payments"
+              },
+              {
+                "type": "credit",
+                "event": "processing",
+                "at": "2017-01-12T04:30:25Z",
+                "ref": "C.e",
+                "by": "Split Payments"
+              },
+              {
+                "type": "credit",
+                "event": "clearing",
+                "at": "2017-01-12T05:17:32Z",
+                "ref": "C.e",
+                "by": "Split Payments"
+              },
+              {
+                "type": "credit",
+                "event": "cleared",
+                "at": "2017-01-15T05:27:12Z",
+                "ref": "C.e",
+                "by": "Split Payments"
+              }
+          ]
+        }
+
+# Group Refunds
+Issue refunds, view refunds you've issued (outgoing) and refunds that have been issued to you (incoming).
+
+## Issue a refund [/credits/{ref}/refunds]
+**Endpoint:** `/credits/{ref}/refunds`
+
+Certain rules apply to the issuance of a refund:
+
+* Must be applied against a successfully cleared credit
+* The refund amount may not exceed the original amount of the credit
+
+### Issue a refund | POST [POST]
+
++ Attributes
+    + amount: 500 (number, required) - Amount in cents refund
+    + reason: Because reason (string, optional) - Reason for the refund. Visible to both parties.
+    + metadata (object, optional) - Optional object to allow custom and configuration values
+        + custom_key: Custom string (string, optional)
+        + `another_custom_key`: Maybe a URL (string, optional)
+
++ Request (application/json)
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+
++ Response 201 (application/json)
+
+        {
+          "data": {
+            "ref": "PRF.1",
+            "for_ref": "C.59",
+            "debit_ref": "D.hi",
+            "created_at": "2017-05-08T07:20:24Z",
+            "amount": 500,
+            "reason": "Because reason",
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
+            }
+          }
+        }
+
+## Incoming refunds [/refunds/incoming{?page}]
+**Endpoint:** `/refunds/incoming{?page}`
+
+### List incoming refunds | GET [GET]
+
++ Parameters
+    + page: 1 (optional) - page of results to return
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 200 (application/json)
+
+    + Headers
+
+            Link: <http:/api-sandbox.spli.cash/refunds/incoming?page=2>; rel="next", <http:/api-sandbox.split.cash/refunds/incoming?page=8>; rel="last"
+
+    + Body
+    
+            {
+              "data": [
+                {
+                  "ref": "PRF.2",
+                  "for_ref": "D.5",
+                  "credit_ref": "C.q",
+                  "created_at": "2017-05-09T04:45:26Z",
+                  "amount": 5,
+                  "reason": "Because reason",
+                  "metadata": {
+                    "custom_key": "Custom string",
+                    "another_custom_key": "Maybe a URL"
+                  }
+                }
+              ]
+            }
+
+## Outgoing refunds [/refunds/outgoing{?page}]
+**Endpoint:** `/refunds/outgoing{?page}`
+
+### List incoming refunds | GET [GET]
+
++ Parameters
+    + page: 1 (optional) - page of results to return
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 200 (application/json)
+
+    + Headers
+
+            Link: <http:/api-sandbox.spli.cash/refunds/outgoing?page=2>; rel="next", <http:/api-sandbox.split.cash/refunds/outgoing?page=8>; rel="last"
+
+    + Body
+    
+            {
+              "data": [
+                {
+                  "ref": "PRF.1",
+                  "for_ref": "C.59",
+                  "debit_ref": "D.hi",
+                  "created_at": "2017-05-08T07:20:24Z",
+                  "amount": 500,
+                  "reason": "Because reason",
+                  "metadata": {
+                    "custom_key": "Custom string",
+                    "another_custom_key": "Maybe a URL"
+                  }
+                }
+              ]
+            }
+
+## Get a refund [/refunds/{ref}]
+**Endpoint:** `/refunds/{ref}`
+
+### Retrieve a refund | GET [GET]
+
++ Parameters
+    + ref: `PRF.1` (string, required) - refund ref
+    
++ Request
+
+    + Headers
+    
+            Authorization: Bearer 147a57a47cc2b21bf7a51e460a2835b646129f41ee420ac73ebf0b5b805229a9
+    
++ Response 200 (application/json)
+    
+        {
+          "data": {
+            "ref": "PRF.1",
+            "for_ref": "C.59",
+            "debit_ref": "D.hi",
+            "created_at": "2017-05-08T07:20:24Z",
+            "amount": 500,
+            "reason": "Because reason",
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
+            }
+          }
+        }
+
 # Group Refund Requests
 Manage refund requests applied against successfully processed payouts.
-
-* A refunder corresponds to a recipient of a successfully processed payout.
+A refunder corresponds to a recipient of a successfully processed payout.
 
   **Example**
   
@@ -1055,6 +1894,7 @@ Manage refund requests applied against successfully processed payouts.
 ## Lifecycle
 
 A `refund_request` can have the following states:
+
 | State | Description |
 |-------|-------------|
 | `pending_approval` | Waiting for the refunder to approve the refund request. |
@@ -1062,10 +1902,17 @@ A `refund_request` can have the following states:
 | `declined` | The refunder has declined the refund request. |
 | `cancelled` | The refund request has been cancelled. |
 
+There are two response fields that differ depending on the request:
+
+| Field | Description |
+|-------|-------------|
+| `debit_ref` | Only visible to the refund authoriser (incoming refund requests). This reference corresponds to the newly created debit to process the refund. |
+| `credit_ref` | Only visisble to the refund initiator (outgoing refund requests). This reference corresponds to the newly created credit from the processed refund. |
+
 ## Request a refund [/payout_refund_requests]
 **Endpoint:** `/payout_refund_requests`
 
-Certain rules apply to the creation of a refund:
+Certain rules apply to the creation of a refund request:
 
 * Must be applied against a successfully processed payout
 * The refund amount requested from a payout recipient may not exceed the original amount of the payout
@@ -1073,12 +1920,16 @@ Certain rules apply to the creation of a refund:
 > **Note:** The original payout recipient(s) must approve the refund request before the refund gets processed.
 
 ### Request a refund | POST [POST]
-#### Body Attributes
-+ Attributes
-    + `debit_ref`: `D.1` (string, required) - The payout ref to refund against
-    + amount: 500 (number, required) - Amount in cents to request from the original payout recipient
 
-+ Request
++ Attributes
+    + `for_ref`: D.1 (string, required) - The payout ref to refund against
+    + amount: 500 (number, required) - Amount in cents to request from the original payout recipient
+    + reason: Because reason (string, optional) - Reason for the refund request. Visible to both parties.
+    + metadata (object, optional) - Optional object to allow custom and configuration values
+        + custom_key: Custom string (string, optional)
+        + `another_custom_key`: Maybe a URL (string, optional)
+
++ Request (application/json)
 
     + Headers
     
@@ -1094,8 +1945,14 @@ Certain rules apply to the creation of a refund:
             "status": "pending_approval",
             "responded_at": null,
             "created_at": "2016-12-19T04:34:38Z",
-            "debit_ref": "D.1",
-            "amount": 500
+            "for_ref": "D.1",
+            "credit_ref": null,
+            "amount": 500,
+            "reason": "Because reasons",
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
+            }
           }
         }
         
@@ -1123,8 +1980,14 @@ Certain rules apply to the creation of a refund:
             "status": "approved",
             "responded_at": "2016-12-19T04:42:59Z",
             "created_at": "2016-12-19T04:34:38Z",
-            "credit_ref": "C.1",
-            "amount": 100
+            "for_ref": "C.1",
+            "debit_ref": "D.2c3",
+            "amount": 100,
+            "reason": "Because reasons",
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
+            }
           }
         }
 
@@ -1152,8 +2015,14 @@ Certain rules apply to the creation of a refund:
             "status": "declined",
             "responded_at": "2016-12-19T04:42:59Z",
             "created_at": "2016-12-19T04:34:38Z",
-            "credit_ref": "C.1",
-            "amount": 100
+            "for_ref": "D.1",
+            "debit_ref": null,
+            "amount": 100,
+            "reason": "Because reasons",
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
+            }
           }
         }
         
@@ -1183,8 +2052,14 @@ A refund request can only be cancelled if it is still `pending_approval`.
             "status": "pending_approval",
             "responded_at": null,
             "created_at": "2016-12-19T04:34:38Z",
-            "debit_ref": "D.1",
-            "amount": 10000
+            "for_ref": "D.1",
+            "credit_ref": null,
+            "amount": 10000,
+            "reason": "Because reasons",
+            "metadata": {
+              "custom_key": "Custom string",
+              "another_custom_key": "Maybe a URL"
+            }
           }
         }
 
@@ -1229,22 +2104,30 @@ A refund request can only be canceled if it is pending approval.
               "data":
                 [
                   {
-                    "ref": "PRR.1",
+                    "ref": "RR.1",
                     "initiator_id": "48b89364-1577-4c81-ba02-96705895d457",
                     "authoriser_id": "dc6f1e60-3803-43ca-a200-7d641816f57f",
                     "status": "approved",
                     "responded_at": "2016-11-23T22:23:11Z",
-                    "credit_ref": "C.1",
-                    "amount": 5000
+                    "for_ref": "C.1",
+                    "debit_ref": "D.9c",
+                    "amount": 5000,
+                    "reason": null,
                   },
                   {
-                    "ref": "PRR.2",
+                    "ref": "RR.2",
                     "initiator_id": "48b89364-1577-4c81-ba02-96705895d457",
                     "authoriser_id": "dc6f1e60-3803-43ca-a200-7d641816f57f",
                     "status": "pending_approval",
                     "responded_at": null,
-                    "credit_ref": "C.2",
-                    "amount": 10000
+                    "for_ref": "C.2",
+                    "debit_ref": null,
+                    "amount": 10000,
+                    "reason": "Because reasons",
+                    "metadata": {
+                      "custom_key": "Custom string",
+                      "another_custom_key": "Maybe a URL"
+                    }
                   }
                 ]
               }
@@ -1282,8 +2165,10 @@ A refund request can only be canceled if it is pending approval.
                     "status": "pending_approval",
                     "responded_at": null,
                     "created_at": "2016-12-19T04:34:38Z",
-                    "debit_ref": "D.1",
-                    "amount": 5000
+                    "for_ref": "D.1",
+                    "credit_ref": null,
+                    "amount": 5000,
+                    "reason": null
                   },
                   {
                     "ref": "RR.2",
@@ -1292,8 +2177,14 @@ A refund request can only be canceled if it is pending approval.
                     "status": "declined",
                     "responded_at": "2016-12-19T04:47:15Z",
                     "created_at": "2016-12-19T04:34:38Z",
-                    "debit_ref": "D.1",
-                    "amount": 10000
+                    "for_ref": "D.1"
+                    "credit_ref": null,
+                    "amount": 10000,
+                    "reason": "Because reasons",
+                    "metadata": {
+                      "custom_key": "Custom string",
+                      "another_custom_key": "Maybe a URL"
+                    }
                   }
                 ]
               }
@@ -1308,6 +2199,37 @@ is on the receiving end - even for payments that have not yet matured!
 
 
 ## List transactions [/transactions{?page}]
+
+By default, all transactions will be returned in order they were created.
+You can apply a number of filters to your query to customise the returned transaction list.
+
+* You may use a combination of filters in a query
+* Use the ampersand (`&`) to add additional filters
+
+| Filter | Description | Usage |
+|--------|-------------|---------|
+| `ref`  | Single value, exact match | `?ref=D.1i` |
+| `parent_ref ` | Single value, exact match | `?parent_ref=PRF.92a` |
+| `bank_ref ` | Single value, exact match | `?bank_ref=DT.12` |
+| `category` | Multiple values, exact match | `?category=payout,payout_refund` |
+| `status` | Multiple values, exact match | `?status=maturing,cleared` |
+| `type` | Multiple values, exact match | `?type=debit,credit` |
+| `other_party` | Single value, string search | `?other_party=some_nickname` |
+| `description` | Single value, string search | `?description=some%20description` |
+| `min_amount` | Single value, cents | `?min_amount=500` |
+| `max_amount` | Single value, cents | `?min_amount=1000` |
+| `min_created_date` | Single value, Date/time UTC ISO 8601 format | `?min_created_date=2017-05-10T04:02:39Z` |
+| `max_created_date` | Single value, Date/time UTC ISO 8601 format | `?max_created_date=2017-05-11T00:00:00Z` |
+| `min_matured_date` | Single value, Date/time UTC ISO 8601 format | `?min_matured_date=2017-05-10T04:02:39Z` |
+| `max_matured_date` | Single value, Date/time UTC ISO 8601 format | `?max_matured_date=2017-05-11T00:00:00Z` |
+| `min_cleared_date` | Single value, Date/time UTC ISO 8601 format | `?min_cleared_date=2017-05-10T04:02:39Z` |
+| `max_cleared_date` | Single value, Date/time UTC ISO 8601 format | `?max_cleared_date=2017-05-11T00:00:00Z` |
+
+**Usage example**
+
+> I'd like to list all `payouts` and `refunds` created between `2017-05-10T00:00:00Z` and `2017-06-10T00:00:00Z` up to `$1000.00`.
+
+`GET /transactions?category[]=payout&category[]=payout_refund&min_created_date=2017-05-10T00:00:00Z&max_created_date=2017-06-10T00:00:00Z&max_amount=100000`
 
 ### List all transactions | GET [GET]
 
@@ -1331,49 +2253,49 @@ is on the receiving end - even for payments that have not yet matured!
             {  
               "data":[  
                 {  
-                  "ref":"D.3",
-                  "parent_ref":null,
-                  "type":"debit",
-                  "category":"payout_refund",
-                  "created_at":"2016-12-07T23:15:00.000Z",
-                  "matures_on":"2016-12-10",
-                  "cleared_at":null,
-                  "bank_ref":null,
-                  "status":"Pending",
-                  "party_name":"Sanford-Rees",
-                  "party_nickname":"sanford-rees-8",
-                  "description":null,
-                  "amount":1
+                  "ref": "D.3",
+                  "parent_ref": null,
+                  "type": "debit",
+                  "category": "payout_refund",
+                  "created_at": "2016-12-07T23:15:00Z",
+                  "matures_at": "2016-12-10T23:15:00Z",
+                  "cleared_at": null,
+                  "bank_ref": null,
+                  "status": "Pending",
+                  "party_name": "Sanford-Rees",
+                  "party_nickname": "sanford-rees-8",
+                  "description": null,
+                  "amount": 1
                 },
                 {  
-                  "ref":"D.2",
-                  "parent_ref":"PB.2",
-                  "type":"debit",
-                  "category":"payout",
-                  "created_at":"2016-12-06T23:15:00.000Z",
-                  "matures_on":"2016-12-09",
-                  "cleared_at":null,
-                  "bank_ref":null,
-                  "status":"Pending",
-                  "party_name":"Gutmann-Schmidt",
-                  "party_nickname":"gutmann-schmidt-6",
-                  "description":null,
-                  "amount":1
+                  "ref": "D.2",
+                  "parent_ref": "PB.2",
+                  "type": "debit",
+                  "category": "payout",
+                  "created_at": "2016-12-06T23:15:00Z",
+                  "matures_at": "2016-12-09T23:15:00Z",
+                  "cleared_at": null,
+                  "bank_ref": null,
+                  "status":" Pending",
+                  "party_name": "Gutmann-Schmidt",
+                  "party_nickname": "gutmann-schmidt-6",
+                  "description": null,
+                  "amount": 1
                 },
                 {  
-                  "ref":"C.2",
-                  "parent_ref":null,
-                  "type":"credit",
-                  "category":"payout",
-                  "created_at":"2016-12-05T23:15:00.000Z",
-                  "matures_on":"2016-12-05",
-                  "cleared_at":"2016-12-05T23:15:00.000Z",
-                  "bank_ref":"CT.1",
-                  "status":"Pending",
-                  "party_name":"Price and Sons",
-                  "party_nickname":"price-and-sons-2",
-                  "description":null,
-                  "amount":1
+                  "ref": "C.2",
+                  "parent_ref": null,
+                  "type": "credit",
+                  "category": "payout",
+                  "created_at": "2016-12-05T23:15:00Z",
+                  "matures_at": "2016-12-06T23:15:00Z",
+                  "cleared_at": "2016-12-09T23:15:00Z",
+                  "bank_ref": "CT.1",
+                  "status": "Pending",
+                  "party_name": "Price and Sons",
+                  "party_nickname": "price-and-sons-2",
+                  "description": "Money for jam",
+                  "amount": 1
                 }
               ]
             }
@@ -1400,7 +2322,7 @@ All actions from this endpoint are performed against the currently authenticated
             "last_name": "Dog",
             "mobile_phone": "0456945832",
             "email": "bear@dog.com",
-            "business": {
+            "account": {
               "name": "Dog Bones Inc",
               "nickname": "dog-bones-inc",
               "abn": "129959040",
